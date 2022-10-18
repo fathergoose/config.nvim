@@ -8,8 +8,8 @@ function _G.getTime()
 end
 
 local function get_max_length()
-    local width = vim.fn.winwidth(0)
-    return width - 30
+	local width = vim.fn.winwidth(0)
+	return width - 30
 end
 
 local function getCWD()
@@ -32,7 +32,7 @@ require("lualine").setup({
 	},
 	sections = {
 		lualine_a = { "mode" },
-		lualine_b = { getCWD },
+		lualine_b = { { "filename", path = 3 } },
 		lualine_c = { "branch", "diff" },
 		lualine_x = { "diagnostics" },
 		lualine_y = {},
@@ -56,11 +56,11 @@ require("lualine").setup({
 				hide_filename_extension = true,
 				mode = 4,
 				max_length = get_max_length,
-                symbols = {
-                    modified = " ",
-                    alternate_file = " ",
-                    directory = "",
-                }
+				symbols = {
+					modified = " ",
+					alternate_file = " ",
+					directory = "",
+				},
 			},
 		},
 		lualine_b = {},

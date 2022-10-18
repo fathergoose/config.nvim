@@ -18,12 +18,12 @@ argglobal
 %argdel
 edit doc/cmp.txt
 argglobal
-let s:l = 720 - ((33 * winheight(0) + 34) / 68)
+let s:l = 871 - ((53 * winheight(0) + 39) / 79)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 720
-normal! 0
+keepjumps 871
+normal! 03|
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf

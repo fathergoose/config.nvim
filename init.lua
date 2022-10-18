@@ -1,19 +1,27 @@
 vim.api.nvim_set_option("termguicolors", true)
 -- Disable some builtin vim plugins
+vim.cmd([[
+if exists('$VIMRUNNING') && ! has('gui_running')
+    cq! 1
+else
+    let $VIMRUNNING = 1
+endif
+]])
 
+vim.cmd("let g:loaded_sql_completion = 0")
 vim.g.loaded = 1
-vim.g.loaded_netrwPlugin = 1
+-- vim.g.loaded_netrwPlugin = 1
 local disabled_built_ins = {
 	"2html_plugin",
 	"getscript",
 	"getscriptPlugin",
 	"gzip",
 	"logipat",
-	"netrw",
+	--[[ "netrw",
 	"netrwPlugin",
 	"netrwSettings",
-	"netrwFileHandlers",
-	"matchit",
+	"netrwFileHandlers", ]]
+	-- "matchit",
 	--"matchparen",
 	"tar",
 	"tarPlugin",
@@ -23,6 +31,7 @@ local disabled_built_ins = {
 	"zip",
 	"zipPlugin",
 }
+vim.cmd("runtime macros/matchit.vim")
 
 for _, plugin in pairs(disabled_built_ins) do
 	vim.g["loaded_" .. plugin] = 1
@@ -52,6 +61,7 @@ require("nvim-lastplace").setup({})
 require("gitsigns-config")
 require("colorizer").setup({}, { css = true })
 require("telescope").load_extension("projects")
+-- require("copilot-config")
 
 local t = {}
 -- Syntax: t[keys] = {function, {function arguments}}
@@ -89,47 +99,6 @@ function _G.toggle_diagnostics()
 	end
 end
 
-require("rose-pine").setup({
-	--- @usage 'main' | 'moon'
-	dark_variant = "moon",
-	bold_vert_split = false,
-	dim_nc_background = false,
-	disable_background = true,
-	disable_float_background = false,
-	disable_italics = false,
-
-	--- @usage string hex value or named color from rosepinetheme.com/palette
-	groups = {
-		background = "base",
-		panel = "surface",
-		border = "highlight_med",
-		comment = "muted",
-		link = "iris",
-		punctuation = "subtle",
-
-		error = "love",
-		hint = "iris",
-		info = "foam",
-		warn = "gold",
-
-		headings = {
-			h1 = "iris",
-			h2 = "foam",
-			h3 = "rose",
-			h4 = "gold",
-			h5 = "pine",
-			h6 = "foam",
-		},
-		-- or set all headings at once
-		-- headings = 'subtle'
-	},
-
-	-- Change specific vim highlight groups
-	highlight_groups = {
-		ColorColumn = { bg = "rose" },
-	},
-})
--- vim.cmd("colorscheme rose-pine")
 vim.cmd("colorscheme solarized")
 
 vim.cmd("command! Vt vsp term://zsh")
@@ -218,3 +187,12 @@ rt.setup({
     end
   end
 ) ]]
+
+vim.cmd([[
+  let g:copilot_no_tab_map = v:true
+  imap <expr> <Plug>(vimrc:copilot-dummy-map) copilot#Accept("\<Tab>")
+]])
+
+-- vim.cmd([[
+-- autocmd VimEnter * if argc() == 0 | vert help news | exec '79wincmd|' | endif
+-- ]]) 

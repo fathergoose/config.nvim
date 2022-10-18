@@ -13,19 +13,17 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +10 ~/Code/rust/exercises/variables/variables1.rs
-badd +173 ~/.config/nvim/lua/lsp-config.lua
-badd +205 ~/.config/nvim/init.lua
+badd +0 Cargo.toml
 argglobal
 %argdel
-edit ~/Code/rust/exercises/variables/variables1.rs
+$argadd Cargo.toml
+edit Cargo.toml
 argglobal
-balt ~/.config/nvim/lua/lsp-config.lua
-let s:l = 10 - ((9 * winheight(0) + 36) / 73)
+let s:l = 1 - ((0 * winheight(0) + 36) / 73)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 10
+keepjumps 1
 normal! 0
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'

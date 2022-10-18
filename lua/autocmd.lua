@@ -55,6 +55,30 @@ vim.api.nvim_create_autocmd("User", {
 	group = startupGroup,
 })
 
+local floatGroup = vim.api.nvim_create_augroup("Floats", {})
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "carbon.explorer" },
+	command = "nnoremap <buffer> <silent> <esc> :close<CR>",
+	group = floatGroup,
+})
+vim.api.nvim_create_autocmd("WinClosed", {
+	-- pattern = { "carbon.explorer" },
+	group = floatGroup,
+	callback = function(args)
+		local wins = _G.GetFloatingWindows()
+		if wins[1] == tonumber(args.match) then
+			_G.CarbonIsFloating = false
+		end
+	end,
+})
+
+local qfGroup = vim.api.nvim_create_augroup("QF", {})
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "qf" },
+	command = "set nobuflisted",
+	group = qfGroup,
+})
+
 --[[ local textChangedGroup = vim.api.nvim_create_augroup("TextChanged", {})
 vim.api.nvim_create_autocmd({ "TextChangedI", "TextChangedP" }, {
 	group = textChangedGroup,
@@ -77,3 +101,15 @@ vim.api.nvim_create_autocmd({ "TextChangedI", "TextChangedP" }, {
 	end,
 	pattern = "*",
 }) ]]
+
+
+local alphaReadyGroup = vim.api.nvim_create_augroup("AlphaReady", {})
+vim.api.nvim_create_autocmd("User", {
+	pattern = "AlphaReady",
+	callback = function()
+		local alpha_win = vim.api.nvim_get_current_win()
+        require("neonews").check_news()
+		vim.api.nvim_set_current_win(alpha_win)
+	end,
+	group = alphaReadyGroup,
+})

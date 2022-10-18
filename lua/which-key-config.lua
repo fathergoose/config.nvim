@@ -86,6 +86,7 @@ wk.register({
 		g = { "<cmd>Telescope live_grep<CR>", "Search `grep`" },
 		h = { "<cmd>Telescope help_tags<CR>", "Search :help" },
 		r = { "<cmd>Telescope command_history<CR>", "Search command_history" },
+		p = { "<cmd>Telescope projects<CR>", "Search project directories" },
 	},
 	d = {},
 	f = { name = "Float", e = { "<cmd>lua vim.diagnostic.open_float()<CR>", "Float error" } },
@@ -93,6 +94,7 @@ wk.register({
 		name = "Git",
 		b = { "<cmd>Git blame<CR>", "git blame" },
 		d = { "<cmd>Gitsigns diffthis<CR>", "Diff this file" },
+        o = { "<cmd>GBrowse<CR>", "Open in browser" },
 	},
 	h = { name = "Highlight / Hide", l = { "<cmd>noh<CR>", "Toggle highlight" } },
 	j = { name = "Jump", m = { "<cmd>Telescope marks<CR>", "Jump to mark" } },
@@ -114,10 +116,11 @@ wk.register({
 		name = "Toggle",
 		i = { "<cmd>IndentBlanklineToggle<CR>", "Indentation guides" },
 		t = { "<cmd>ToggleTerm direction=horizontal<CR>", "Toggle terminal (bottom)" },
-		v = { "<cmd>ToggleTerm direction=vertical size=60<CR>", "Vertical split terminal" },
+		v = { "<cmd>ToggleTerm direction=vertical size=100<CR>", "Vertical split terminal" },
 		f = { "<cmd>ToggleTerm direction=float<CR>", "Floating terminal" },
 		e = { "<cmd>TroubleToggle<CR>", "Errors (trouble.nvim)" },
 		h = { "<cmd>set hlsearch!<CR>", "Highlight search" },
+        c = { "<cmd>lua require('copilot.suggestion').toggle_auto_trigger()<CR>", "Toggle copilot" },
 	},
 	e = {
 		name = "Edit",
@@ -127,5 +130,10 @@ wk.register({
 		m = { "<cmd>edit ~/.config/nvim/lua/mappings.lua<CR>", "Edit mappings.lua" },
 		k = { "<cmd>edit ~/.config/nvim/lua/which-key-config.lua<CR>", "Edit which-key-config.lua" },
 		s = { "<cmd>edit ~/.config/nvim/lua/settings.lua<CR>", "Edit settings.lua" },
+        w = { "<cmd>edit ~/.config/wezterm/wezterm.lua<CR>", "Edit wezterm.lua" },
 	},
+    z = {
+        name = "Zlex (personal misc)",
+        m = { [[<cmd>%s//\r/g<cr>]], "Znewlines for ^M" },
+    }
 }, { prefix = "<leader>" })
