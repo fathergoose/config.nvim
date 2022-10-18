@@ -253,12 +253,12 @@ return require("packer").startup({
 				})
 			end,
 		})
-		use({
+		--[[ use({
 			"/Users/al/code/nvim/neonews",
 			config = function()
 				require("neonews").setup({})
 			end,
-		})
+		}) ]]
 		use("hrsh7th/cmp-nvim-lua")
 	end,
 

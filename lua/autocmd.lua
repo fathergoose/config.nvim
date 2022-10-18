@@ -104,12 +104,12 @@ vim.api.nvim_create_autocmd({ "TextChangedI", "TextChangedP" }, {
 
 
 local alphaReadyGroup = vim.api.nvim_create_augroup("AlphaReady", {})
-vim.api.nvim_create_autocmd("User", {
-	pattern = "AlphaReady",
-	callback = function()
-		local alpha_win = vim.api.nvim_get_current_win()
-        require("neonews").check_news()
-		vim.api.nvim_set_current_win(alpha_win)
-	end,
-	group = alphaReadyGroup,
-})
+-- vim.api.nvim_create_autocmd("User", {
+-- 	pattern = "AlphaReady",
+-- 	callback = function()
+-- 		local alpha_win = vim.api.nvim_get_current_win()
+--         require("neonews").check_news()
+-- 		vim.api.nvim_set_current_win(alpha_win)
+-- 	end,
+-- 	group = alphaReadyGroup,
+-- })
