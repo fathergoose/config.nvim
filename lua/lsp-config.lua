@@ -104,22 +104,6 @@ require("null-ls").setup({
 		-- require("null-ls").builtins.diagnostics.markdownlint,
 		require("null-ls").builtins.formatting.pg_format,
         require("null-ls").builtins.formatting.beautysh,
-		require("null-ls").builtins.diagnostics.luacheck.with({
-			filetypes = {
-				"lua",
-			},
-			args = {
-				"--formatter",
-				"plain",
-				"--codes",
-				"--ranges",
-				"--filename",
-				"/Users/al/.config/nvim/init.lua",
-				"-",
-				"--globals",
-				"vim",
-			},
-		}),
 	},
 })
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {

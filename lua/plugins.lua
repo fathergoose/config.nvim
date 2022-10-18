@@ -74,8 +74,8 @@ return require("packer").startup(function(use)
 		ft = { "markdown" },
 	})
 
-	use("~/code/nvim/demoplug")
-	use("~/example-plugin")
+	-- use("~/code/nvim/demoplug")
+	-- use("~/example-plugin")
 	use({
 		"nvim-telescope/telescope-frecency.nvim",
 		config = function()
@@ -144,7 +144,7 @@ return require("packer").startup(function(use)
 	})
 	--use("psliwka/vim-smoothie")
 	use("karb94/neoscroll.nvim")
-	use("blindFS/vim-taskwarrior")
+	-- use("blindFS/vim-taskwarrior")
 	use({ "lalitmee/cobalt2.nvim", requires = "tjdevries/colorbuddy.nvim" })
 
 	use({

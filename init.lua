@@ -2,17 +2,17 @@ vim.api.nvim_set_option("termguicolors", true)
 -- Disable some builtin vim plugins
 
 vim.g.loaded = 1
-vim.g.loaded_netrwPlugin = 1
+-- vim.g.loaded_netrwPlugin = 1
 local disabled_built_ins = {
 	"2html_plugin",
 	"getscript",
 	"getscriptPlugin",
 	"gzip",
 	"logipat",
-	"netrw",
+	--[[ "netrw",
 	"netrwPlugin",
 	"netrwSettings",
-	"netrwFileHandlers",
+	"netrwFileHandlers", ]]
 	"matchit",
 	--"matchparen",
 	"tar",
