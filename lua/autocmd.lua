@@ -20,6 +20,24 @@ vim.api.nvim_create_autocmd("VimEnter", {
 	group = foldGroup,
 })
 
+local openAlpha = function()
+    local buf = vim.api.nvim_get_current_buf()
+    vim.cmd("Alpha")
+    vim.api.nvim_buf_delete(buf, { force = true })
+    vim.cmd("echom 'Alpha'")
+end
+local testGroup = vim.api.nvim_create_augroup("TestStuff", {clear = true})
+vim.api.nvim_create_autocmd("VimEnter", {
+    callback = openAlpha,
+	group = testGroup,
+    once = true,
+})
+vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = "alpha://*",
+    command = "setlocal filetype=alpha",
+    group = testGroup,
+})
+
 local jsGroup = vim.api.nvim_create_augroup("JS/TS", {})
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "javascript", "typescript", "javascriptreact", "typescriptreact", "json" },
@@ -55,22 +73,6 @@ vim.api.nvim_create_autocmd("User", {
 	group = startupGroup,
 })
 
-local floatGroup = vim.api.nvim_create_augroup("Floats", {})
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "carbon.explorer" },
-	command = "nnoremap <buffer> <silent> <esc> :close<CR>",
-	group = floatGroup,
-})
-vim.api.nvim_create_autocmd("WinClosed", {
-	-- pattern = { "carbon.explorer" },
-	group = floatGroup,
-	callback = function(args)
-		local wins = _G.GetFloatingWindows()
-		if wins[1] == tonumber(args.match) then
-			_G.CarbonIsFloating = false
-		end
-	end,
-})
 
 local qfGroup = vim.api.nvim_create_augroup("QF", {})
 vim.api.nvim_create_autocmd("FileType", {

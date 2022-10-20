@@ -32,6 +32,7 @@ local disabled_built_ins = {
 	"zipPlugin",
 }
 vim.cmd("runtime macros/matchit.vim")
+vim.cmd("set rtp+=/Users/al/local/tree.nvim/")
 
 for _, plugin in pairs(disabled_built_ins) do
 	vim.g["loaded_" .. plugin] = 1
@@ -61,7 +62,7 @@ require("nvim-lastplace").setup({})
 require("gitsigns-config")
 require("colorizer").setup({}, { css = true })
 require("telescope").load_extension("projects")
--- require("copilot-config")
+require("float-explore").setup({})
 
 local t = {}
 -- Syntax: t[keys] = {function, {function arguments}}
@@ -155,6 +156,8 @@ else
 			"GitSignsAdd",
 			"GitSignsChange",
 			"GitSignsDelete",
+			"FloatShadowThrough",
+			"FloatShadow",
 		},
 		exclude = {},
 	})
@@ -173,26 +176,16 @@ rt.setup({
 	},
 })
 
---[[ vim.ui_attach(
-  vim.api.nvim_create_namespace("redirect messages"),
-  { ext_messages = true },
-  function(event, ...)
-    if event == "msg_show" then
-      local level = vim.log.levels.INFO
-      local kind, content = ...
-      if string.find(kind, "err") then
-        level = vim.log.levels.ERROR
-      end
-      vim.notify(content, level, { title = "Message" })
-    end
-  end
-) ]]
-
 vim.cmd([[
   let g:copilot_no_tab_map = v:true
   imap <expr> <Plug>(vimrc:copilot-dummy-map) copilot#Accept("\<Tab>")
 ]])
 
--- vim.cmd([[
--- autocmd VimEnter * if argc() == 0 | vert help news | exec '79wincmd|' | endif
--- ]]) 
+vim.cmd([[
+function! SynStack()
+        if !exists("*synstack")
+            return
+        endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+]])

@@ -42,7 +42,12 @@ return require("packer").startup({
 			"folke/todo-comments.nvim",
 			requires = "nvim-lua/plenary.nvim",
 		})
-		use({ "ray-x/guihua.lua" })
+		use({ "ray-x/guihua.lua", run = "cd lua/fzy && make" })
+		require("guihua.maps").setup({
+			maps = {
+				close_view = "<C-x>",
+			},
+		})
 		use({ "nvim-telescope/telescope.nvim" })
 		use({ "dstein64/vim-startuptime" })
 		use({ "folke/tokyonight.nvim" })
@@ -73,10 +78,10 @@ return require("packer").startup({
 			requires = { "tami5/sqlite.lua" },
 		})
 		use({
-		"nvim-telescope/telescope-smart-history.nvim",
+			"nvim-telescope/telescope-smart-history.nvim",
 			requires = { "tami5/sqlite.lua" },
 		})
-        
+
 		use("b3nj5m1n/kommentary")
 		use("numToStr/Comment.nvim")
 		use("nvim-telescope/telescope-fzy-native.nvim")
@@ -120,10 +125,10 @@ return require("packer").startup({
 							},
 						},
 						suggestion = {
-                            auto_trigger = true,
+							auto_trigger = true,
 							keymap = {
 								accept = "<TAB>", -- TODO: Change to vanilla imap for <tab> this is preventing me from using <tab> in insert
-                                toggle_auto_trigger = "<C-Space>",
+								toggle_auto_trigger = "<C-Space>",
 							},
 						},
 					})
@@ -190,6 +195,7 @@ return require("packer").startup({
 					startify.button("p", "  Select recent project", [[<cmd>Telescope projects<cr>]]),
 				}
 				startify.config.opts.margin = 20
+				startify.config.opts.autostart = false
 				alpha.setup(startify.config)
 			end,
 		})
@@ -224,19 +230,35 @@ return require("packer").startup({
 				})
 			end,
 		})
-		use("kevinhwang91/rnvimr")
+		use({ "kevinhwang91/rnvimr", opt = true, cmd = "RnvimrToggle" })
 		use("simrat39/rust-tools.nvim")
 		use("darfink/vim-plist")
-		use({
+		use("zgpio/tree.nvim")
+		--[[ use({
 			"SidOfc/carbon.nvim",
 			config = function()
 				require("carbon").setup({
 					auto_open = false,
 					always_reveal = true,
 					bang = true,
+					exclude = {
+						"~$",
+						"#$",
+						"%.git$",
+						"%.bak$",
+						"%.rbc$",
+						"%.class$",
+						"%.sw[a-p]$",
+						"%.py[cod]$",
+						"%.Trashes$",
+						"%.DS_Store$",
+						"Thumbs%.db$",
+						"__pycache__",
+						"node_modules",
+					},
 				})
 			end,
-		})
+		}) ]]
 		use({
 			"lukas-reineke/indent-blankline.nvim",
 			config = function()

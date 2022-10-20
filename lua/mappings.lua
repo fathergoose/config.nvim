@@ -1,40 +1,6 @@
-_G.CarbonIsFloating = false
-
-_G.GetFloatingWindows = function()
-    local floating_windows = {}
-	for _, win in ipairs(vim.api.nvim_list_wins()) do
-		local config = vim.api.nvim_win_get_config(win)
-		if config.relative ~= "" then -- is_floating_window?
-            table.insert(floating_windows, win)
-		end
-	end
-    return floating_windows
-end
-local closeAllFloatingWindows = function()
-    local win = _G.GetFloatingWindows()
-    if win ~= nil then
-        for _, w in ipairs(win) do
-            vim.api.nvim_win_close(w, true)
-        end
-    end
-end
-
-_G.ToggleCarbon = function()
-	if _G.CarbonIsFloating then
-		closeAllFloatingWindows()
-		_G.CarbonIsFloating = false
-	else
-		require("carbon").explore_float({
-			always_reveal = true,
-		})
-		_G.CarbonIsFloating = true
-	end
-end
-
 local opts = { noremap = true, silent = true }
 
 --Normal
-vim.api.nvim_set_keymap("n", "<C-n>", ":lua ToggleCarbon()<CR>", opts)
 vim.api.nvim_set_keymap("n", "<C-p>", ":Telescope find_files find_command=rg,--ignore,--hidden,--files<CR>", opts)
 vim.api.nvim_set_keymap("c", "<C-r>", ":Telescope command_history<CR>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<Leader>ek", ":e ~/.config/nvim/lua/mappings.lua<CR>", opts)
@@ -53,7 +19,6 @@ vim.api.nvim_set_keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", op
 vim.api.nvim_set_keymap("n", "<space>q", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
 vim.api.nvim_set_keymap("n", "<space>l", "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>", opts)
 vim.api.nvim_set_keymap("n", "<C-Space>", "<cmd>Telescope<CR>", opts)
-
 vim.api.nvim_set_keymap("n", "<C-/>", "mzI//<space><esc>`z3l", { noremap = true, silent = true })
 
 --Terminal
@@ -73,11 +38,13 @@ vim.api.nvim_set_keymap("i", "<C-d>", "<Del>", { silent = true })
 vim.api.nvim_set_keymap("i", "<C-h>", "<BS>", { silent = true })
 vim.api.nvim_set_keymap("i", "<C-u>", "<space><esc>ld0i", { silent = true })
 vim.api.nvim_set_keymap("i", "<C-y>", "<c-r>", { silent = true })
-vim.api.nvim_set_keymap("i", "<C-Space>", "<c-o>:lua require('copilot.suggestion').toggle_auto_trigger()<CR>", { silent = false, noremap=true })
-vim.api.nvim_set_keymap("!", "<C-@>", "<C-Space>", { silent = false, noremap=false })
-
--- vim.api.nvim_set_keymap("i", "<C-k>", "<C-r>=Emacs_bindings_kill_line()<CR>>", { silent = true })
--- vim.api.nvim_set_keymap("i", "<C-j>", "<C-o>:lua vim.lsp.buf.completion()<CR>", opts)
+vim.api.nvim_set_keymap(
+	"i",
+	"<C-Space>",
+	"<c-o>:lua require('copilot.suggestion').toggle_auto_trigger()<CR>",
+	{ silent = false, noremap = true }
+)
+vim.api.nvim_set_keymap("!", "<C-@>", "<C-Space>", { silent = false, noremap = false })
 
 --Command
 vim.api.nvim_set_keymap("c", "<C-b>", "<Left>", {})

@@ -13,21 +13,18 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +291 ~/.config/wezterm/wezterm.lua
-badd +237 ~/.config/nvim/lua/plugins.lua
-badd +140 ~/.config/nvim/init.lua
+badd +13 /private/var/folders/jw/wv2y54yj7_v5d2wwzv03_t740000gn/T/2441703886.md
 argglobal
 %argdel
-$argadd ~/.config/wezterm/wezterm.lua
-edit ~/.config/nvim/init.lua
+$argadd /private/var/folders/jw/wv2y54yj7_v5d2wwzv03_t740000gn/T/2441703886.md
+edit /private/var/folders/jw/wv2y54yj7_v5d2wwzv03_t740000gn/T/2441703886.md
 argglobal
-balt ~/.config/nvim/lua/plugins.lua
-let s:l = 140 - ((39 * winheight(0) + 40) / 80)
+let s:l = 13 - ((12 * winheight(0) + 39) / 79)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 140
-normal! 025|
+keepjumps 13
+normal! 062|
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -41,6 +38,7 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :
