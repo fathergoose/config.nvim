@@ -41,7 +41,6 @@ local function open_win()
       char, and clearing the |hl-EndOfBuffer| region in
       'winhighlight'. ]]
 
-
 	local opts = {
 		relative = "editor",
 		width = win_width,
@@ -50,7 +49,6 @@ local function open_win()
 		col = col,
 		border = "rounded",
 	}
-
 
 	win = vim.api.nvim_open_win(buf, true, opts)
 end
@@ -65,11 +63,11 @@ local function view()
 	vim.api.nvim_win_set_option(win, "foldcolumn", "0")
 	vim.api.nvim_win_set_option(win, "spell", false)
 	vim.api.nvim_win_set_option(win, "list", false)
-    vim.api.nvim_win_set_option(win, "signcolumn", "auto")
-    vim.api.nvim_win_set_option(win, "colorcolumn", "")
+	vim.api.nvim_win_set_option(win, "signcolumn", "auto")
+	vim.api.nvim_win_set_option(win, "colorcolumn", "")
 	vim.api.nvim_buf_set_option(0, "filetype", "netrw.float")
 	vim.api.nvim_win_set_option(win, "winblend", 0)
-    vim.api.nvim_win_set_option(win, 'winhl', 'EndOfBuffer:Normal')
+	vim.api.nvim_win_set_option(win, "winhl", "EndOfBuffer:Normal")
 	vim.api.nvim_buf_set_option(0, "modifiable", false)
 end
 
@@ -78,7 +76,7 @@ local function float_explorer()
 	view()
 end
 
-local floatGroup = vim.api.nvim_create_augroup("Floats", {clear = true})
+local floatGroup = vim.api.nvim_create_augroup("Floats", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "netrw.float" },
 	command = "nnoremap <buffer> <silent> <esc> :lua _G.ToggleNetrwFloat()<CR>",
@@ -89,39 +87,31 @@ vim.api.nvim_create_autocmd("BufLeave", {
 	pattern = { "/Users/al/.config/nvim/NetrwTreeListing" },
 	group = floatGroup,
 	callback = function(args)
+		print("BufLeave")
 		local wins = _G.GetFloatingWindows()
-        buf = vim.api.nvim_win_get_buf(wins[1])
+		buf = vim.api.nvim_win_get_buf(wins[1])
 		if buf == args.buf then
-            _G.ToggleNetrwFloat()
+			_G.ToggleNetrwFloat()
 		end
 	end,
 })
 
--- This is the event I want, but I need to figre out why it's
--- trying to reference an "invalid buffer" when I use it a second time
-vim.api.nvim_create_autocmd("BufWinEnter", {
-	pattern =  "*" ,
+vim.api.nvim_create_autocmd("WinEnter", {
+	pattern = "*",
 	group = floatGroup,
 	callback = function(args)
+        print("WinEnter")
 		local wins = _G.GetFloatingWindows()
-        if #wins > 0 then
-            buf = vim.api.nvim_win_get_buf(wins[1])
-            if buf == args.buf then
-                print("netrwbufn", netrwbufn)
-            _G.ToggleNetrwFloat()
-            end
-        end
+		if #wins > 0 then
+			buf = vim.api.nvim_win_get_buf(wins[1])
+			if buf == args.buf then
+				_G.ToggleNetrwFloat()
+			end
+		end
 	end,
 })
 
-
-
-vim.api.nvim_set_keymap(
-	"n",
-	"<C-n>",
-	":lua _G.ToggleNetrwFloat()<CR>",
-	{ noremap = true, silent = true }
-)
+vim.api.nvim_set_keymap("n", "<C-n>", ":lua _G.ToggleNetrwFloat()<CR>", { noremap = true, silent = true })
 
 _G.NetrwIsFloating = false
 
@@ -162,7 +152,7 @@ vim.api.nvim_set_keymap("n", "<C-n>", ":ToggleNetrwFloat<CR>", { noremap = true,
 
 return {
 	float_explorer = float_explorer,
-    setup = function(opts)
-        defaults = vim.tbl_deep_extend("force", defaults, opts or {})
-    end,
+	setup = function(opts)
+		defaults = vim.tbl_deep_extend("force", defaults, opts or {})
+	end,
 }

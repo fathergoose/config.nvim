@@ -20,12 +20,12 @@ end
 require("lualine").setup({
 	options = {
 		icons_enabled = true,
-		theme = custom_solarized, --palenight is tight
+		theme = "catppuccin", --palenight is tight
 		component_separators = { left = "", right = "" },
 		section_separators = { left = "", right = "" },
 		disabled_filetypes = {
-			statusline = {},
-			winbar = { "help", "Trouble", "NvimTree", "Outline", "packer", "qf", "toggleterm" },
+			statusline = {"deck"},
+			winbar = { "help", "Trouble", "NvimTree", "Outline", "packer", "qf", "toggleterm", "deck"},
 		},
 		always_divide_middle = true,
 		globalstatus = true,

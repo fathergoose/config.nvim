@@ -57,26 +57,27 @@ require("typescript").setup({
 		},
 	},
 })
-require("null-ls").setup({
+local null_ls = require("null-ls")
+null_ls.setup({
 	on_attach = on_attach,
 	debug = false,
 	loglevel = "trace",
 	sources = {
-		require("null-ls").builtins.code_actions.gitsigns,
-		require("null-ls").builtins.code_actions.eslint_d,
-		require("null-ls").builtins.formatting.stylua.with({
+		null_ls.builtins.code_actions.gitsigns,
+		null_ls.builtins.code_actions.eslint_d,
+		null_ls.builtins.formatting.stylua.with({
 			filetypes = {
 				"lua",
 			},
 		}),
-		require("null-ls").builtins.diagnostics.eslint_d,
-		require("null-ls").builtins.completion.spell.with({
+		null_ls.builtins.diagnostics.eslint_d,
+		null_ls.builtins.completion.spell.with({
 			filetypes = {
 				"txt",
 				"markdown",
 			},
 		}),
-		require("null-ls").builtins.formatting.prettierd.with({
+		null_ls.builtins.formatting.prettierd.with({
 			filetypes = {
 				"javascript",
 				"javascriptreact",
@@ -90,21 +91,24 @@ require("null-ls").setup({
 				"json",
 				"jsonc",
 				"yaml",
-				-- "markdown",
-				-- "vimwiki", -- Markdown syntax
 				"graphql",
 				"handlebars",
 			},
 		}),
-		require("null-ls").builtins.diagnostics.cfn_lint,
-		require("null-ls").builtins.diagnostics.codespell,
-		require("null-ls").builtins.formatting.codespell.with({
+		null_ls.builtins.diagnostics.cfn_lint,
+		null_ls.builtins.diagnostics.codespell,
+		null_ls.builtins.formatting.codespell.with({
 			filetypes = { "markdown", "text" },
 		}),
-		-- require("null-ls").builtins.diagnostics.markdownlint,
-		require("null-ls").builtins.formatting.pg_format,
-        require("null-ls").builtins.formatting.beautysh,
-		require("null-ls").builtins.diagnostics.luacheck.with({
+        null_ls.builtins.formatting.sqlfluff.with({
+            extra_args = { "--dialect", "postgres", "--exclude-rules", "L031" },
+        }),
+        -- TODO: Turn back on with more relaxed rules; I don't actually write SQL after all
+        --[[ null_ls.builtins.diagnostics.sqlfluff.with({
+            extra_args = { "--dialect", "postgres", "--exclude-rules", "L031" },
+        }), ]]
+		null_ls.builtins.formatting.beautysh,
+		null_ls.builtins.diagnostics.luacheck.with({
 			filetypes = {
 				"lua",
 			},

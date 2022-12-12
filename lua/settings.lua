@@ -12,7 +12,7 @@ o.wildmenu = true
 o.ttyfast = true
 o.spell = false
 o.clipboard = "unnamedplus"
-o.completeopt = "menu,menuone,noselect"
+o.completeopt = "menu,menuone,noinsert"
 o.inccommand = "split"
 o.mouse = "a"
 o.signcolumn = "yes"
@@ -38,8 +38,8 @@ o.shortmess = "aITsWcFS"
 -- ]]
 
 -- vim.cmd("set cursorline")
-vim.cmd("syntax enable")
-vim.cmd("filetype plugin on")
+-- vim.cmd("syntax enable")
+-- vim.cmd("filetype plugin on")
 
 -- Misc Variables
 vim.cmd("let &t_ut=''")

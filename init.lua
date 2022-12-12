@@ -8,21 +8,17 @@ else
 endif
 ]])
 
-vim.cmd("let g:loaded_sql_completion = 0")
+vim.cmd("let g:loaded_sql_completion = -1")
 vim.g.loaded = 1
--- vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 local disabled_built_ins = {
 	"2html_plugin",
 	"getscript",
 	"getscriptPlugin",
 	"gzip",
 	"logipat",
-	--[[ "netrw",
-	"netrwPlugin",
-	"netrwSettings",
-	"netrwFileHandlers", ]]
-	-- "matchit",
-	--"matchparen",
 	"tar",
 	"tarPlugin",
 	"rrhelper",
@@ -32,7 +28,6 @@ local disabled_built_ins = {
 	"zipPlugin",
 }
 vim.cmd("runtime macros/matchit.vim")
-vim.cmd("set rtp+=/Users/al/local/tree.nvim/")
 
 for _, plugin in pairs(disabled_built_ins) do
 	vim.g["loaded_" .. plugin] = 1
@@ -40,9 +35,8 @@ end
 
 require("plugins")
 require("settings")
-require("autocmd")
 require("winbar")
--- require("nvim-tree-config")
+require("nvim-tree-config")
 require("telescope-config")
 require("cmp-config")
 require("lsp-config")
@@ -51,7 +45,6 @@ require("which-key-config")
 require("toggle-term-config")
 require("color-picker-config")
 require("lualine-config")
-require("todo-comments-config")
 require("zen-mode-config")
 require("symbols-outline-config")
 require("treesitter-context").setup({})
@@ -62,7 +55,12 @@ require("nvim-lastplace").setup({})
 require("gitsigns-config")
 require("colorizer").setup({}, { css = true })
 require("telescope").load_extension("projects")
-require("float-explore").setup({})
+require("psql").setup({
+	database_name = "warehouse",
+	user = "postgres",
+	host = "127.0.0.1",
+	port = 5432,
+})
 
 local t = {}
 -- Syntax: t[keys] = {function, {function arguments}}
@@ -100,7 +98,9 @@ function _G.toggle_diagnostics()
 	end
 end
 
-vim.cmd("colorscheme solarized")
+-- vim.cmd("colorscheme solarized")
+-- require('monokai').setup { palette = require('monokai').pro }
+-- vim.cmd('colorscheme base16-seti')
 
 vim.cmd("command! Vt vsp term://zsh")
 vim.cmd("command! Ps w | so | PackerInstall | PackerCompile")
@@ -189,3 +189,49 @@ function! SynStack()
     echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc
 ]])
+
+vim.cmd([[
+let g:minimap_width = 10
+let g:minimap_auto_start = 0
+let g:minimap_auto_start_win_enter = 1
+let g:minimap_block_buftypes = ['nofile', 'nowrite', 'quickfix', 'terminal', 'prompt']
+let g:minimap_close_filetypes = ['help', 'packer', 'qf', 'alpha', 'tagbar', 'undotree', 'vim-plug']
+let g:minimap_git_colors = 1
+let g:minimap_highlight_range = 1
+]])
+
+vim.cmd([[
+    set mouse=a
+    behave xterm
+"    set mousemodel=popup
+"    aunmenu PopUp
+"    anoremenu PopUp.GoToDefinition              <Cmd>lua vim.lsp.buf.definition()<CR>
+"    vnoremenu PopUp.Cut                         "+x
+"    vnoremenu PopUp.Copy                        "+y
+"    anoremenu PopUp.Paste                       "+gP
+"    vnoremenu PopUp.Paste                       "+P
+"    vnoremenu PopUp.Delete                      "_x
+]])
+	--[[ vim.cmd("command! LspDef lua vim.lsp.buf.definition()")
+	vim.cmd("command! LspFormatting lua vim.lsp.buf.format()")
+	vim.cmd("command! LspCodeAction lua vim.lsp.buf.code_action()")
+	vim.cmd("command! LspHover lua vim.lsp.buf.hover()")
+	vim.cmd("command! LspRename lua vim.lsp.buf.rename()")
+	vim.cmd("command! LspRefs lua vim.lsp.buf.references()")
+	vim.cmd("command! LspTypeDef lua vim.lsp.buf.type_definition()")
+	vim.cmd("command! LspImplementation lua vim.lsp.buf.implementation()")
+	vim.cmd("command! LspDiagPrev lua vim.diagnostic.goto_prev()")
+	vim.cmd("command! LspDiagNext lua vim.diagnostic.goto_next()")
+	vim.cmd("command! LspDiagLine lua vim.diagnostic.open_float()")
+	vim.cmd("command! LspSignatureHelp lua vim.lsp.buf.signature_help()") ]]
+
+--[[
+-- Other options for the popup menu
+    nnoremenu PopUp.Select\ All>                ggVG
+    vnoremenu PopUp.Select\ All>                gg0oG$
+    inoremenu PopUp.Select\ All                 <C-Home><C-O>VG
+    anoremenu PopUp.-1-                         <Nop>
+    anoremenu PopUp.How-to\ disable\ mouse      <Cmd>help disable-mouse<CR>
+]]
+
+require("autocmd")

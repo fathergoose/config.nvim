@@ -20,22 +20,24 @@ vim.api.nvim_create_autocmd("VimEnter", {
 	group = foldGroup,
 })
 
-local openAlpha = function()
-    local buf = vim.api.nvim_get_current_buf()
-    vim.cmd("Alpha")
-    vim.api.nvim_buf_delete(buf, { force = true })
-    vim.cmd("echom 'Alpha'")
+local openAlphaIfNoArgs = function()
+	if vim.fn.argc() == 0 then
+		local buf = vim.api.nvim_get_current_buf()
+		vim.cmd("Alpha")
+		vim.api.nvim_buf_delete(buf, { force = true })
+	end
 end
-local testGroup = vim.api.nvim_create_augroup("TestStuff", {clear = true})
-vim.api.nvim_create_autocmd("VimEnter", {
-    callback = openAlpha,
-	group = testGroup,
-    once = true,
+
+local startupGroup = vim.api.nvim_create_augroup("Startup", {})
+vim.api.nvim_create_autocmd("User", {
+	pattern = "CodiEnterPost",
+	command = "lua vim.diagnostic.disable(0)",
+	group = startupGroup,
 })
-vim.api.nvim_create_autocmd("BufEnter", {
-    pattern = "alpha://*",
-    command = "setlocal filetype=alpha",
-    group = testGroup,
+vim.api.nvim_create_autocmd("VimEnter", {
+	callback = openAlphaIfNoArgs,
+	group = startupGroup,
+	once = true,
 })
 
 local jsGroup = vim.api.nvim_create_augroup("JS/TS", {})
@@ -54,9 +56,24 @@ vim.api.nvim_create_autocmd("FileType", {
 
 local mdGroup = vim.api.nvim_create_augroup("MDGroup", {})
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "vimwiki, markdown" },
+	pattern = { "vimwiki", "markdown" },
 	command = "iunmap <buffer> <TAB>",
 	group = mdGroup,
+})
+
+local deckftGroup = vim.api.nvim_create_augroup("DeckftGroup", {})
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile", "BufReadPost" }, {
+	pattern = { "*.deck" },
+	nested = true,
+	callback = function()
+		vim.opt_local.filetype = "deck"
+		vim.opt_local.syntax = "markdown"
+		vim.b.presenting_slide_separator = "----"
+		vim.opt_local.spell = false
+		vim.opt_local.number = false
+		vim.opt.winbar = ''
+	end,
+	group = deckftGroup,
 })
 
 local textLogGrp = vim.api.nvim_create_augroup("TextLog", {})
@@ -66,19 +83,18 @@ vim.api.nvim_create_autocmd("FileType", {
 	group = textLogGrp,
 })
 
-local startupGroup = vim.api.nvim_create_augroup("Startup", {})
-vim.api.nvim_create_autocmd("User", {
-	pattern = "CodiEnterPost",
-	command = "lua vim.diagnostic.disable(0)",
-	group = startupGroup,
-})
-
-
 local qfGroup = vim.api.nvim_create_augroup("QF", {})
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "qf" },
 	command = "set nobuflisted",
 	group = qfGroup,
+})
+
+local miniMapGroup = vim.api.nvim_create_augroup("MiniMap", {})
+vim.api.nvim_create_autocmd("QuitPre", {
+	-- pattern = {"*"},
+	command = "MinimapClose",
+	group = miniMapGroup,
 })
 
 --[[ local textChangedGroup = vim.api.nvim_create_augroup("TextChanged", {})
@@ -104,13 +120,12 @@ vim.api.nvim_create_autocmd({ "TextChangedI", "TextChangedP" }, {
 	pattern = "*",
 }) ]]
 
-
 local alphaReadyGroup = vim.api.nvim_create_augroup("AlphaReady", {})
 vim.api.nvim_create_autocmd("User", {
 	pattern = "AlphaReady",
 	callback = function()
 		local alpha_win = vim.api.nvim_get_current_win()
-        require("neonews").check_news()
+		require("neonews").check_news()
 		vim.api.nvim_set_current_win(alpha_win)
 	end,
 	group = alphaReadyGroup,

@@ -38,10 +38,6 @@ return require("packer").startup({
 		use({ "jose-elias-alvarez/null-ls.nvim" })
 		use({ "jose-elias-alvarez/typescript.nvim" })
 		use({ "folke/trouble.nvim" })
-		use({
-			"folke/todo-comments.nvim",
-			requires = "nvim-lua/plenary.nvim",
-		})
 		use({ "ray-x/guihua.lua", run = "cd lua/fzy && make" })
 		require("guihua.maps").setup({
 			maps = {
@@ -51,7 +47,6 @@ return require("packer").startup({
 		use({ "nvim-telescope/telescope.nvim" })
 		use({ "dstein64/vim-startuptime" })
 		use({ "folke/tokyonight.nvim" })
-		use("nathom/filetype.nvim")
 		use({ "lewis6991/impatient.nvim" })
 		use({
 			"nvim-lualine/lualine.nvim",
@@ -61,14 +56,14 @@ return require("packer").startup({
 		use({ "SidOfc/mkdx", opt = true })
 		use("rhysd/vim-gfm-syntax")
 		use({ "vimwiki/vimwiki", opt = true, cmd = { "VimwikiIndex", "VimwikiMakeDiaryNote" }, branch = "dev" })
-		use({
+		--[[ use({
 			"iamcco/markdown-preview.nvim",
 			run = "cd app && npm install",
 			setup = function()
 				vim.g.mkdp_filetypes = { "markdown" }
 			end,
 			ft = { "markdown" },
-		})
+		}) ]]
 
 		use({
 			"nvim-telescope/telescope-frecency.nvim",
@@ -96,14 +91,6 @@ return require("packer").startup({
 		use("hrsh7th/vim-vsnip")
 		use("L3MON4D3/LuaSnip")
 		use("saadparwaiz1/cmp_luasnip")
-		--use("github/copilot.vim")
-		--[[ use({
-			"zbirenbaum/copilot-cmp",
-			after = { "copilot.lua" },
-			config = function()
-				require("copilot_cmp").setup()
-			end,
-		}) ]]
 		use({
 			"zbirenbaum/copilot.lua",
 			event = { "VimEnter" },
@@ -233,7 +220,7 @@ return require("packer").startup({
 		use({ "kevinhwang91/rnvimr", opt = true, cmd = "RnvimrToggle" })
 		use("simrat39/rust-tools.nvim")
 		use("darfink/vim-plist")
-		use("zgpio/tree.nvim")
+		-- use("zgpio/tree.nvim")
 		--[[ use({
 			"SidOfc/carbon.nvim",
 			config = function()
@@ -260,12 +247,20 @@ return require("packer").startup({
 			end,
 		}) ]]
 		use({
+			"nvim-tree/nvim-tree.lua",
+			requires = {
+				"nvim-tree/nvim-web-devicons", -- optional, for file icons
+			},
+			tag = "nightly", -- optional, updated every week. (see issue #1193)
+		})
+
+		use({
 			"lukas-reineke/indent-blankline.nvim",
 			config = function()
-				vim.cmd("highlight IndentBlanklineChar guifg=#4d5a5e gui=nocombine")
+				vim.cmd("highlight IndentBlanklineChar guifg=#222222 gui=nocombine")
 
 				require("indent_blankline").setup({
-					char = "▏",
+					-- char = "▏",
 					buftype_exclude = { "terminal" },
 					filetype_exclude = { "help", "terminal", "dashboard", "packer", "alpha" },
 					show_trailing_blankline_indent = false,
@@ -276,12 +271,126 @@ return require("packer").startup({
 			end,
 		})
 		use({
-			"/Users/al/code/nvim/neonews",
+			-- "fathergoose/neonews",
+			"/Users/al/code/nvim/neonews/",
 			config = function()
-				require("neonews").setup({})
+				require("neonews").setup({
+					check_on_startup = false,
+					unread_news_strategy = "sha256",
+					startup_message = false,
+				})
 			end,
 		})
 		use("hrsh7th/cmp-nvim-lua")
+		use("wfxr/minimap.vim")
+		use({
+			"gorbit99/codewindow.nvim",
+			config = function()
+				local codewindow = require("codewindow")
+				codewindow.setup()
+				codewindow.apply_default_keybinds()
+			end,
+		})
+		use("RRethy/nvim-base16")
+		use({
+			"catppuccin/nvim",
+			as = "catppuccin",
+			config = function()
+				require("catppuccin").setup({
+					transparent_background = true,
+					flavour = "macchiato", -- mocha, macchiato, frappe, latte
+					styles = {
+						comments = { "italic" },
+					},
+					integrations = {
+						which_key = true,
+						treesitter_context = true,
+						indent_blankline = {
+							enabled = true,
+							colored_indent_levels = true,
+						},
+						native_lsp = {
+							enabled = true,
+							virtual_text = {
+								errors = { "italic" },
+								hints = { "italic" },
+								warnings = { "italic" },
+								information = { "italic" },
+							},
+							underlines = {
+								errors = { "underline" },
+								hints = { "underline" },
+								warnings = { "underline" },
+								information = { "underline" },
+							},
+						},
+					},
+				})
+				vim.api.nvim_command("colorscheme catppuccin")
+			end,
+		})
+		use({
+			"windwp/nvim-autopairs",
+			config = function()
+				require("nvim-autopairs").setup()
+				local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+				local cmp = require("cmp")
+				cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+			end,
+		})
+		use("vim-scripts/dbext.vim")
+		use({
+			"folke/todo-comments.nvim",
+			requires = "nvim-lua/plenary.nvim",
+			config = function()
+				require("todo-comments").setup({
+					signs = false,
+					-- your configuration comes here
+					-- or leave it empty to use the default settings
+					-- refer to the configuration section below
+				})
+			end,
+		})
+		use("sotte/presenting.vim")
+		use({
+			"edluffy/hologram.nvim",
+			config = function()
+				require("hologram").setup({ auto_display = true })
+			end,
+		})
+		--[[ use({
+			"folke/noice.nvim",
+			config = function()
+				require("noice").setup({
+					-- add any options here
+					level = nil,
+					lsp = {
+						-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+						override = {
+							["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+							["vim.lsp.util.stylize_markdown"] = true,
+							["cmp.entry.get_documentation"] = true,
+						},
+					},
+					-- you can enable a preset for easier configuration
+					presets = {
+						bottom_search = true, -- use a classic bottom cmdline for search
+						command_palette = true, -- position the cmdline and popupmenu together
+						long_message_to_split = true, -- long messages will be sent to a split
+						inc_rename = false, -- enables an input dialog for inc-rename.nvim
+						lsp_doc_border = false, -- add a border to hover docs and signature help
+					},
+				})
+			end,
+			requires = {
+				-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+				"MunifTanjim/nui.nvim",
+				-- OPTIONAL:
+				--   `nvim-notify` is only needed, if you want to use the notification view.
+				--   If not available, we use `mini` as the fallback
+				"rcarriga/nvim-notify",
+			},
+		}) ]]
 	end,
 
 	config = { display = { open_cmd = "rightbelow 75vnew \\[packer\\]" }, max_jobs = 10 },

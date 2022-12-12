@@ -1,6 +1,10 @@
 local cmp = require("cmp")
 
 cmp.setup({
+    preselect = cmp.PreselectMode.Item,
+    completion = {
+        completeopt = "menu,menuone,noinsert",
+    },
 	snippet = {
 		-- REQUIRED - you must specify a snippet engine
 		expand = function(args)
@@ -17,7 +21,13 @@ cmp.setup({
 	mapping = cmp.mapping.preset.insert({
 		["<C-b>"] = cmp.mapping.scroll_docs(-4),
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
-		-- ["<C-Space>"] = cmp.mapping.complete(),
+		["<C-Space>"] = cmp.mapping(function (fallback)
+            if cmp.visible() then
+                cmp.mapping(cmp.mapping.confirm({select = true }))
+            else
+                cmp.mapping(cmp.mapping.complete())
+            end
+        end, {"i"}),
 		-- ["<tab>"] = cmp.mapping.confirm({select = true }),
 		["<C-e>"] = cmp.mapping.abort(),
 		["<tab>"] = cmp.mapping(function(fallback)
