@@ -1,12 +1,9 @@
 vim.api.nvim_set_option("termguicolors", true)
--- Disable some builtin vim plugins
 vim.cmd([[
-if exists('$VIMRUNNING') && ! has('gui_running')
-    cq! 1
-else
-    let $VIMRUNNING = 1
-endif
+set guifont=MonoLisaOne\ Nerd\ Font:h14
 ]])
+
+vim.lsp.set_log_level("debug")
 
 vim.cmd("let g:loaded_sql_completion = -1")
 vim.g.loaded = 1
@@ -39,14 +36,12 @@ require("winbar")
 require("nvim-tree-config")
 require("telescope-config")
 require("cmp-config")
-require("lsp-config")
 require("mappings")
 require("which-key-config")
 require("toggle-term-config")
 require("color-picker-config")
 require("lualine-config")
 require("zen-mode-config")
-require("symbols-outline-config")
 require("treesitter-context").setup({})
 require("neoscroll").setup({
 	easing_function = "sine", -- Default easing function
@@ -54,14 +49,10 @@ require("neoscroll").setup({
 require("nvim-lastplace").setup({})
 require("gitsigns-config")
 require("colorizer").setup({}, { css = true })
-require("telescope").load_extension("projects")
-require("psql").setup({
-	database_name = "warehouse",
-	user = "postgres",
-	host = "127.0.0.1",
-	port = 5432,
-})
+-- require("telescope").load_extension("projects")
+require("alpha-config")
 
+vim.cmd("noremap <f1> <nop>")
 local t = {}
 -- Syntax: t[keys] = {function, {function arguments}}
 -- Use the "sine" easing function
@@ -98,10 +89,6 @@ function _G.toggle_diagnostics()
 	end
 end
 
--- vim.cmd("colorscheme solarized")
--- require('monokai').setup { palette = require('monokai').pro }
--- vim.cmd('colorscheme base16-seti')
-
 vim.cmd("command! Vt vsp term://zsh")
 vim.cmd("command! Ps w | so | PackerInstall | PackerCompile")
 
@@ -111,57 +98,39 @@ local function vimwikiDiaryNoteWithName()
 	vim.cmd("normal kdd")
 end
 
+-- put =strftime('# %A, %B %d, %Y')
+-- # Friday, February 03, 2023
+-- put =strftime("%Y-%m-%d %H:%M")
+-- 2023-02-03 03:44
+local function dateHead()
+	return vim.fn.strftime("# %A, %B %d, %Y")
+end
+local function eightDigitTimestamp()
+	return vim.fn.strftime("%T")
+end
+
+vim.api.nvim_create_user_command("DateHead", dateHead, {})
+vim.api.nvim_create_user_command("EightDigitTimestamp", eightDigitTimestamp, {})
+
+vim.cmd('nmap <leader>it a<C-R>=strftime("%T")<CR><Esc>')
+vim.cmd('nmap <leader>id a<C-R>=strftime("# %A, %B %d, %Y")<CR><Esc>')
+
 vim.api.nvim_create_user_command("Diary", vimwikiDiaryNoteWithName, {})
 
-if vim.g.neovide then
-	require("transparent").setup({
-		enable = true, -- boolean: enable transparent
-		extra_groups = {
-			-- "all",
-			"LineNR",
-			--[[ "GitSignsAdd",
-            "GitSignsChange",
-            "GitSignsDelete", ]]
-		},
-		exclude = { "Normal" },
-	})
-	vim.cmd([[
-        set winblend=100
-        set pumblend=100
-        let g:neovide_hide_mouse_when_typing = v:true
-        let g:neovide_floating_blur_amount_x = 2.0
-        let g:neovide_floating_blur_amount_y = 2.0
-        let g:neovide_remember_window_size = v:true
-        let g:neovide_transparency = 0.0
-        let g:transparency = 0.8
-        let g:neovide_background_color = '#002b36'.printf('%x', float2nr(255 * g:transparency))
-        set guifont=Rec\ Mono\ Casual:h15
-        hi Normal guibg='#002b36'
-        set cmdheight=0
-    ]])
-
-	vim.cmd("cd /Users/al/Desktop/vimwiki")
-	vim.api.nvim_set_keymap("!", "<D-c>", '"+y', {})
-	vim.api.nvim_set_keymap("v", "<D-c>", '"+y', {})
-	vim.api.nvim_set_keymap("n", "<D-c>", '"+yy', {})
-	vim.api.nvim_set_keymap("n", "<D-v>", '"+p', {})
-	vim.api.nvim_set_keymap("i", "<D-v>", "<c-r>+", { noremap = true })
-	vim.api.nvim_set_keymap("n", "<D-v>", "<c-r>+", { noremap = true })
-	vim.api.nvim_set_keymap("t", "<D-v>", "<c-r>+", { noremap = true })
-else
-	require("transparent").setup({
-		enable = true, -- boolean: enable transparent
-		extra_groups = {
-			"all",
-			"GitSignsAdd",
-			"GitSignsChange",
-			"GitSignsDelete",
-			"FloatShadowThrough",
-			"FloatShadow",
-		},
-		exclude = {},
-	})
-end
+require("transparent").setup({
+	extra_groups = {
+		"all",
+		"GitSignsAdd",
+		"GitSignsChange",
+		"GitSignsDelete",
+		"FloatShadowThrough",
+		"FloatShadow",
+		"help",
+		"NormalFloat", -- plugins which have float panel such as Lazy, Mason, LspInfo
+		"NvimTreeNormal",
+	},
+	exclude_groups = {},
+})
 
 local rt = require("rust-tools")
 
@@ -202,36 +171,164 @@ let g:minimap_highlight_range = 1
 
 vim.cmd([[
     set mouse=a
-    behave xterm
-"    set mousemodel=popup
-"    aunmenu PopUp
-"    anoremenu PopUp.GoToDefinition              <Cmd>lua vim.lsp.buf.definition()<CR>
-"    vnoremenu PopUp.Cut                         "+x
-"    vnoremenu PopUp.Copy                        "+y
-"    anoremenu PopUp.Paste                       "+gP
-"    vnoremenu PopUp.Paste                       "+P
-"    vnoremenu PopUp.Delete                      "_x
 ]])
-	--[[ vim.cmd("command! LspDef lua vim.lsp.buf.definition()")
-	vim.cmd("command! LspFormatting lua vim.lsp.buf.format()")
-	vim.cmd("command! LspCodeAction lua vim.lsp.buf.code_action()")
-	vim.cmd("command! LspHover lua vim.lsp.buf.hover()")
-	vim.cmd("command! LspRename lua vim.lsp.buf.rename()")
-	vim.cmd("command! LspRefs lua vim.lsp.buf.references()")
-	vim.cmd("command! LspTypeDef lua vim.lsp.buf.type_definition()")
-	vim.cmd("command! LspImplementation lua vim.lsp.buf.implementation()")
-	vim.cmd("command! LspDiagPrev lua vim.diagnostic.goto_prev()")
-	vim.cmd("command! LspDiagNext lua vim.diagnostic.goto_next()")
-	vim.cmd("command! LspDiagLine lua vim.diagnostic.open_float()")
-	vim.cmd("command! LspSignatureHelp lua vim.lsp.buf.signature_help()") ]]
-
---[[
--- Other options for the popup menu
-    nnoremenu PopUp.Select\ All>                ggVG
-    vnoremenu PopUp.Select\ All>                gg0oG$
-    inoremenu PopUp.Select\ All                 <C-Home><C-O>VG
-    anoremenu PopUp.-1-                         <Nop>
-    anoremenu PopUp.How-to\ disable\ mouse      <Cmd>help disable-mouse<CR>
-]]
 
 require("autocmd")
+
+require("obsidian").setup({
+	dir = "~/Documents/ObsidianVault/",
+	completion = {
+		nvim_cmp = true, -- if using nvim-cmp, otherwise set to false
+	},
+	daily_notes = {
+		folder = "Notebook",
+	},
+	use_advaced_uri = true,
+	note_id_func = function(title)
+		-- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
+		local suffix = ""
+		if title ~= nil then
+			-- If title is given, transform it into valid file name.
+			suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+		else
+			-- If title is nil, just add 4 random uppercase letters to the suffix.
+			for _ = 1, 4 do
+				suffix = suffix .. string.char(math.random(65, 90))
+			end
+		end
+		return tostring(os.date("%y%m%dT%H%M%S"))
+	end,
+})
+
+require("nvim-treesitter.configs").setup({
+	ensure_installed = "all",
+	highlight = {
+		enable = true,
+		additional_vim_regex_highlighting = { "markdown" },
+	},
+})
+
+require("dap-config")
+require("neodev").setup({
+	library = { plugins = { "nvim-dap-ui" }, types = true },
+	...,
+})
+
+require("dressing").setup({
+	select = {
+		get_config = function(opts)
+			if opts.kind == "legendary.nvim" then
+				return {
+					telescope = {
+						sorter = require("telescope.sorters").fuzzy_with_index_bias({}),
+					},
+				}
+			else
+				return {}
+			end
+		end,
+	},
+})
+
+require("colors")
+-- vim.cmd("colorscheme onedark")
+local neogit = require("neogit")
+neogit.setup({})
+require("project_nvim-config")
+
+require("aerial-config")
+require("lsp-config")
+require("better-folding")
+require("chatGPT-config")
+
+vim.cmd([[
+    aunmenu PopUp.How-to\ disable\ mouse
+    aunmenu PopUp.Select\ All
+    if &mousemodel =~? 'popup'
+        anoremenu <silent> PopUp.Go\ to\ Definition
+        \ <cmd>LspDef<CR>
+        anoremenu <silent> PopUp.Go\ to\ Declaration
+        \ <cmd>lua vim.lsp.buf.declaration()<CR>
+        anoremenu <silent> PopUp.Find\ All\ References
+        \ <cmd>LspRefs<CR>
+        anoremenu <silent> PopUp.Show\ Detail
+        \ <cmd>LspHover<CR>
+    endif
+
+]])
+
+vim.cmd([[
+
+	set tabline=%!MyTabLine()
+
+" Then define the MyTabLine() function to list all the tab pages labels.  A
+" convenient method is to split it in two parts:  First go over all the tab
+" pages and define labels for them.  Then get the label for each tab page.
+
+	function MyTabLine()
+	  let s = ''
+	  for i in range(tabpagenr('$'))
+	    " select the highlighting
+	    if i + 1 == tabpagenr()
+	      let s ..= '%#TabLineSel#'
+	    else
+	      let s ..= '%#TabLine#'
+	    endif
+
+	    " set the tab page number (for mouse clicks)
+	    let s ..= '%' .. (i + 1) .. 'T'
+
+	    " the label is made by MyTabLabel()
+	    let s ..= ' %{MyTabLabel(' .. (i + 1) .. ')} '
+	  endfor
+
+	  " after the last tab fill with TabLineFill and reset tab page nr
+	  let s ..= '%#TabLineFill#%T'
+
+	  " right-align the label to close the current tab page
+	  if tabpagenr('$') > 1
+	    let s ..= '%=%#TabLine#%999Xclose'
+	  endif
+
+	  return s
+	endfunction
+
+" Now the MyTabLabel() function is called for each tab page to get its label
+
+	function MyTabLabel(n)
+	  let buflist = tabpagebuflist(a:n)
+
+      " TODO: use winlayout() to get the layout of the tabpage
+
+	  let winnr = tabpagewinnr(a:n)
+      let additional = tabpagewinnr(a:n, '$') - 1
+      let l:layout_symbol = ''
+      if additional == 1
+          if winlayout(a:n)[0] == 'col'
+              let l:layout_symbol = '􀧊  '
+          else
+              let l:layout_symbol = '􀧈  '
+          endif
+      elseif additional == 2
+          let l:izero = winlayout(a:n)[0]
+          if l:izero == 'col' || l:izero[1] == 'row' || l:izero[1][1] == 'row'
+             let l:layout_symbol = '􀏝  '
+          else
+              let l:layout_symbol = '􀏟  '
+          endif
+      elseif additional == 3
+          let l:layout_symbol = '􀧌  '
+      elseif additional >= 4
+          let l:layout_symbol = '􀏢  '
+      else
+          let l:layout_symbol = '􀏚  '
+      endif
+      let extra_count = additional > 0 ? ' +' .. additional : ''
+      return a:n .. " " .. l:layout_symbol .. luaeval('vim.fs.basename("' .. bufname(buflist[winnr - 1]) ..'")') .. extra_count
+	endfunction
+
+]])
+
+vim.cmd([[
+nnoremap <M-m> :RnvimrToggle<CR>
+]])

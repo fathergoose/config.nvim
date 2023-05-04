@@ -12,7 +12,8 @@ o.wildmenu = true
 o.ttyfast = true
 o.spell = false
 o.clipboard = "unnamedplus"
-o.completeopt = "menu,menuone,noinsert"
+-- o.completeopt = "menu,menuone,noinsert"
+o.completeopt = "menu,menuone"
 o.inccommand = "split"
 o.mouse = "a"
 o.signcolumn = "yes"
@@ -23,8 +24,6 @@ o.shiftwidth = 2 -- "Number of spaces to use for each step of (auto)indent."
 o.timeoutlen = 500
 o.conceallevel = 2
 o.cmdheight = 1
-o.foldmethod = "expr"
-o.foldlevel = 99
 o.shortmess = "aITsWcFS"
 --[[
 -- a -> all abrivations
@@ -96,6 +95,7 @@ let g:table_mode_corner='|'
 vim.g.neovide_cursor_trail_size = 0.5
 vim.g.neovide_cursor_animation_length = 0.1
 vim.cmd("let g:neovide_input_use_logo=v:true")
-vim.api.nvim_set_option("guifont", "SFMono Nerd Font:h14")
+-- vim.api.nvim_set_option("guifont", "SFMono Nerd Font:h14")
 vim.api.nvim_set_option("undofile", true)
 vim.api.nvim_set_option("undodir", "/Users/al/.config/nvim/undodir")
+

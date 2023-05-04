@@ -37,31 +37,32 @@ local on_attach = function(client, bufnr)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>.", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-	--vim.api.nvim_buf_set_keymap(bufnr, "n", "<space>f", "<cmd>lua vim.lsp.buf.format()<CR>", opts)
+	--[[ local function organize_imports()
+		local params = {
+			command = "pyright.organizeimports",
+			arguments = { vim.uri_from_bufnr(0) },
+		}
+		vim.lsp.buf.execute_command(params)
+	end
 
-	--[[ if client.server_capabilities.documentFormattingProvider then
-		vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.format()")
+	if client.name == "pyright" then
+		vim.api.nvim_create_user_command("PyrightOrganizeImports", organize_imports, { desc = "Organize Imports" })
 	end ]]
-
-	-- client.request
 end
 
-require("typescript").setup({
-	disable_commands = false, -- prevent the plugin from creating Vim commands
-	debug = true, -- enable debug logging for commands
-	server = { -- pass options to lspconfig's setup method
-		-- capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-		on_attach = on_attach,
-		init_options = {
-			hostInfo = "neovim",
-		},
+require("lspconfig").tsserver.setup({
+	capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
+	on_attach = on_attach,
+	init_options = {
+		hostInfo = "neovim",
 	},
 })
+
 local null_ls = require("null-ls")
+
 null_ls.setup({
 	on_attach = on_attach,
-	debug = false,
-	loglevel = "trace",
+	debug = true,
 	sources = {
 		null_ls.builtins.code_actions.gitsigns,
 		null_ls.builtins.code_actions.eslint_d,
@@ -83,31 +84,33 @@ null_ls.setup({
 				"javascriptreact",
 				"typescript",
 				"typescriptreact",
-				"vue",
-				"css",
-				"scss",
-				"less",
-				"html",
-				"json",
-				"jsonc",
-				"yaml",
-				"graphql",
-				"handlebars",
 			},
+		}),
+		null_ls.builtins.formatting.prettier.with({
+			"json",
+			"yaml",
+			"toml",
+			"graphql",
+			"markdown",
+			"css",
+			"scss",
+			"less",
+			"json5",
+			"jsonc",
+			"vue",
+			"svelte",
 		}),
 		null_ls.builtins.diagnostics.cfn_lint,
 		null_ls.builtins.diagnostics.codespell,
 		null_ls.builtins.formatting.codespell.with({
 			filetypes = { "markdown", "text" },
 		}),
-        null_ls.builtins.formatting.sqlfluff.with({
-            extra_args = { "--dialect", "postgres", "--exclude-rules", "L031" },
-        }),
-        -- TODO: Turn back on with more relaxed rules; I don't actually write SQL after all
-        --[[ null_ls.builtins.diagnostics.sqlfluff.with({
-            extra_args = { "--dialect", "postgres", "--exclude-rules", "L031" },
-        }), ]]
+		null_ls.builtins.formatting.sqlfluff.with({
+			extra_args = { "--dialect", "postgres", "--exclude-rules", "L031" },
+		}),
+        null_ls.builtins.code_actions.refactoring,
 		null_ls.builtins.formatting.beautysh,
+		null_ls.builtins.diagnostics.shellcheck,
 		null_ls.builtins.diagnostics.luacheck.with({
 			filetypes = {
 				"lua",
@@ -124,6 +127,8 @@ null_ls.setup({
 				"vim",
 			},
 		}),
+		null_ls.builtins.formatting.autopep8,
+		null_ls.builtins.diagnostics.flake8,
 	},
 })
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -140,6 +145,7 @@ require("nvim-treesitter.configs").setup({
 	ignore_install = { "phpdoc", "tree-sitter-phpdoc" },
 	highlight = {
 		enabled = true,
+		additional_vim_regex_highlighting = false,
 	},
 })
 
@@ -148,30 +154,17 @@ vim.diagnostic.config({
 	underline = { severity = { min = vim.diagnostic.severity.WARN } },
 })
 
---[[ local nvim_lsp = require'lspconfig'
-
-local rust_on_attach = function(client)
-    require'completion'.on_attach(client)
-end
-
-nvim_lsp.rust_analyzer.setup({
-    on_attach=rust_on_attach,
-    settings = {
-        ["rust-analyzer"] = {
-            imports = {
-                granularity = {
-                    group = "module",
-                },
-                prefix = "self",
-            },
-            cargo = {
-                buildScripts = {
-                    enable = true,
-                },
-            },
-            procMacro = {
-                enable = true
-            },
-        }
-    }
+--[[ require("lspconfig").pyright.setup({
+	on_attach = on_attach,
+	python = {
+		analysis = {
+			autoSearchPaths = true,
+			diagnosticMode = "file",
+			useLibraryCodeForTypes = true,
+		},
+	},
 }) ]]
+
+require("lspconfig").pylyzer.setup({
+    on_attach = on_attach,
+})

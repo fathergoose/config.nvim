@@ -26,7 +26,18 @@ return require("packer").startup({
 			"lewis6991/gitsigns.nvim",
 			requires = { "nvim-lua/plenary.nvim" },
 		})
-		use({ "mzarnitsa/psql" })
+		use({
+			"mzarnitsa/psql",
+			opt = true,
+			config = function()
+				require("psql").setup({
+					database_name = "warehouse",
+					user = "postgres",
+					host = "127.0.0.1",
+					port = 5432,
+				})
+			end,
+		})
 		use({ "tpope/vim-fugitive" })
 		use({ "tpope/vim-rhubarb" })
 		use({ "tpope/vim-surround" })
@@ -36,7 +47,6 @@ return require("packer").startup({
 		use({ "fladson/vim-kitty" })
 		use({ "neovim/nvim-lspconfig" })
 		use({ "jose-elias-alvarez/null-ls.nvim" })
-		use({ "jose-elias-alvarez/typescript.nvim" })
 		use({ "folke/trouble.nvim" })
 		use({ "ray-x/guihua.lua", run = "cd lua/fzy && make" })
 		require("guihua.maps").setup({
@@ -46,25 +56,14 @@ return require("packer").startup({
 		})
 		use({ "nvim-telescope/telescope.nvim" })
 		use({ "dstein64/vim-startuptime" })
-		use({ "folke/tokyonight.nvim" })
 		use({ "lewis6991/impatient.nvim" })
 		use({
 			"nvim-lualine/lualine.nvim",
 			requires = { "kyazdani42/nvim-web-devicons", opt = true },
 		})
 		use("dhruvasagar/vim-table-mode")
-		use({ "SidOfc/mkdx", opt = true })
+		use({ "SidOfc/mkdx" })
 		use("rhysd/vim-gfm-syntax")
-		use({ "vimwiki/vimwiki", opt = true, cmd = { "VimwikiIndex", "VimwikiMakeDiaryNote" }, branch = "dev" })
-		--[[ use({
-			"iamcco/markdown-preview.nvim",
-			run = "cd app && npm install",
-			setup = function()
-				vim.g.mkdp_filetypes = { "markdown" }
-			end,
-			ft = { "markdown" },
-		}) ]]
-
 		use({
 			"nvim-telescope/telescope-frecency.nvim",
 			config = function()
@@ -83,24 +82,64 @@ return require("packer").startup({
 		use("cappyzawa/trim.nvim")
 		use("folke/which-key.nvim")
 		use("hrsh7th/cmp-nvim-lsp")
+		use("hrsh7th/cmp-nvim-lsp-signature-help")
 		use("hrsh7th/cmp-buffer")
 		use("hrsh7th/cmp-path")
+		use("hrsh7th/cmp-emoji")
 		use("hrsh7th/cmp-cmdline")
 		use("hrsh7th/nvim-cmp")
 		use("hrsh7th/cmp-vsnip")
 		use("hrsh7th/vim-vsnip")
+		use("rcarriga/cmp-dap")
 		use("L3MON4D3/LuaSnip")
 		use("saadparwaiz1/cmp_luasnip")
+
 		use({
 			"zbirenbaum/copilot.lua",
 			event = { "VimEnter" },
 			config = function()
 				vim.defer_fn(function()
 					require("copilot").setup({
-						ft_disable = { "markdown", "vimwiki", "json", "Telescope", "rust" },
+						panel = {
+							enabled = true,
+							auto_refresh = false,
+							keymap = {
+								jump_prev = "[[",
+								jump_next = "]]",
+								accept = "<CR>",
+								refresh = "gr",
+								open = "<M-CR>",
+							},
+							layout = {
+								position = "bottom", -- | top | left | right
+								ratio = 0.4,
+							},
+						},
 						cmp = {
 							enabled = true,
 							method = "getCompletionsCycling",
+						},
+
+						filetypes = {
+							markdown = false,
+							vimwiki = false,
+							json = false,
+							Telescope = false,
+							rust = false,
+							["*"] = true,
+						},
+						suggestion = {
+							enabled = true,
+							auto_trigger = true,
+							debounce = 75,
+							keymap = {
+								accept = "<M-l>",
+								accept_word = false,
+								accept_line = false,
+								next = "<M-]>",
+								prev = "<M-[>",
+								dismiss = "<C-]>",
+							},
 						},
 						server_opts_overrides = {
 							trace = "verbose",
@@ -109,13 +148,6 @@ return require("packer").startup({
 									listCount = 10, -- #completions for panel
 									inlineSuggestCount = 3, -- #completions for getCompletions
 								},
-							},
-						},
-						suggestion = {
-							auto_trigger = true,
-							keymap = {
-								accept = "<TAB>", -- TODO: Change to vanilla imap for <tab> this is preventing me from using <tab> in insert
-								toggle_auto_trigger = "<C-Space>",
 							},
 						},
 					})
@@ -140,10 +172,7 @@ return require("packer").startup({
 				require("color-picker")
 			end,
 		})
-		use("ishan9299/nvim-solarized-lua")
-		use("xiyaowong/nvim-transparent")
 		use("folke/lua-dev.nvim")
-		use("folke/lsp-colors.nvim")
 		use("folke/zen-mode.nvim")
 		use("folke/twilight.nvim")
 		use({
@@ -154,7 +183,7 @@ return require("packer").startup({
 				require("persistence").setup()
 			end,
 		})
-		use("simrat39/symbols-outline.nvim")
+		-- use("simrat39/symbols-outline.nvim")
 		use("ethanholz/nvim-lastplace")
 		use("rcarriga/nvim-notify")
 		use("nvim-treesitter/nvim-treesitter-context")
@@ -163,40 +192,8 @@ return require("packer").startup({
 		use({
 			"goolord/alpha-nvim",
 			requires = { "kyazdani42/nvim-web-devicons", opt = true },
-			config = function()
-				local alpha = require("alpha")
-				local startify = require("alpha.themes.startify")
-				startify.nvim_web_devicons.enabled = true
-				startify.section.top_buttons.val = {
-					startify.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
-					startify.button(
-						"l",
-						"  Restore last session",
-						[[<cmd>lua require("persistence").load({ last = true })<cr>]]
-					),
-					startify.button(
-						"d",
-						"  Restore last session for CWD " .. vim.fn.getcwd():match("([^/]+)$"),
-						[[<cmd>lua require("persistence").load()<cr>]]
-					),
-					startify.button("p", "  Select recent project", [[<cmd>Telescope projects<cr>]]),
-				}
-				startify.config.opts.margin = 20
-				startify.config.opts.autostart = false
-				alpha.setup(startify.config)
-			end,
 		})
-		use("metakirby5/codi.vim")
 		use("norcalli/nvim-colorizer.lua")
-		use({
-			"ahmedkhalf/project.nvim",
-			-- "/Users/al/local/lib/project.nvim",
-			config = function()
-				require("project_nvim").setup({
-					exclude_dirs = { "~/Code/Augintel/apis/*" },
-				})
-			end,
-		}) -- default configuration
 		use({
 			"RRethy/vim-illuminate",
 			config = function()
@@ -216,36 +213,12 @@ return require("packer").startup({
 					},
 				})
 			end,
+			opt = true,
+			cmd = "GitConflictListQf",
 		})
 		use({ "kevinhwang91/rnvimr", opt = true, cmd = "RnvimrToggle" })
 		use("simrat39/rust-tools.nvim")
 		use("darfink/vim-plist")
-		-- use("zgpio/tree.nvim")
-		--[[ use({
-			"SidOfc/carbon.nvim",
-			config = function()
-				require("carbon").setup({
-					auto_open = false,
-					always_reveal = true,
-					bang = true,
-					exclude = {
-						"~$",
-						"#$",
-						"%.git$",
-						"%.bak$",
-						"%.rbc$",
-						"%.class$",
-						"%.sw[a-p]$",
-						"%.py[cod]$",
-						"%.Trashes$",
-						"%.DS_Store$",
-						"Thumbs%.db$",
-						"__pycache__",
-						"node_modules",
-					},
-				})
-			end,
-		}) ]]
 		use({
 			"nvim-tree/nvim-tree.lua",
 			requires = {
@@ -271,8 +244,8 @@ return require("packer").startup({
 			end,
 		})
 		use({
-			-- "fathergoose/neonews",
-			"/Users/al/code/nvim/neonews/",
+			"fathergoose/neonews",
+			-- "/Users/al/code/nvim/neonews/",
 			config = function()
 				require("neonews").setup({
 					check_on_startup = false,
@@ -282,60 +255,35 @@ return require("packer").startup({
 			end,
 		})
 		use("hrsh7th/cmp-nvim-lua")
-		use("wfxr/minimap.vim")
-		use({
-			"gorbit99/codewindow.nvim",
-			config = function()
-				local codewindow = require("codewindow")
-				codewindow.setup()
-				codewindow.apply_default_keybinds()
-			end,
-		})
-		use("RRethy/nvim-base16")
 		use({
 			"catppuccin/nvim",
 			as = "catppuccin",
-			config = function()
-				require("catppuccin").setup({
-					transparent_background = true,
-					flavour = "macchiato", -- mocha, macchiato, frappe, latte
-					styles = {
-						comments = { "italic" },
-					},
-					integrations = {
-						which_key = true,
-						treesitter_context = true,
-						indent_blankline = {
-							enabled = true,
-							colored_indent_levels = true,
-						},
-						native_lsp = {
-							enabled = true,
-							virtual_text = {
-								errors = { "italic" },
-								hints = { "italic" },
-								warnings = { "italic" },
-								information = { "italic" },
-							},
-							underlines = {
-								errors = { "underline" },
-								hints = { "underline" },
-								warnings = { "underline" },
-								information = { "underline" },
-							},
-						},
-					},
-				})
-				vim.api.nvim_command("colorscheme catppuccin")
-			end,
 		})
 		use({
 			"windwp/nvim-autopairs",
 			config = function()
-				require("nvim-autopairs").setup()
+				local Rule = require("nvim-autopairs.rule")
+				require("nvim-autopairs").setup({
+					ignored_next_char = "[%w%.]", -- will ignore alphanumeric and `.` symbol
+					check_ts = true,
+					ts_config = {
+						lua = { "string" }, -- it will not add a pair on that treesitter node
+						javascript = { "template_string" },
+						java = false, -- don't check treesitter on java
+					},
+				})
 				local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 				local cmp = require("cmp")
 				cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+				local npairs = require("nvim-autopairs")
+
+				local ts_conds = require("nvim-autopairs.ts-conds")
+
+				-- press % => %% only while inside a comment or string
+				npairs.add_rules({
+					Rule("%", "%", "lua"):with_pair(ts_conds.is_ts_node({ "string", "comment" })),
+					Rule("$", "$", "lua"):with_pair(ts_conds.is_not_ts_node({ "function" })),
+				})
 			end,
 		})
 		use("vim-scripts/dbext.vim")
@@ -345,52 +293,77 @@ return require("packer").startup({
 			config = function()
 				require("todo-comments").setup({
 					signs = false,
-					-- your configuration comes here
-					-- or leave it empty to use the default settings
-					-- refer to the configuration section below
 				})
-			end,
-		})
-		use("sotte/presenting.vim")
-		use({
-			"edluffy/hologram.nvim",
-			config = function()
-				require("hologram").setup({ auto_display = true })
 			end,
 		})
 		--[[ use({
-			"folke/noice.nvim",
+			"ggandor/leap.nvim",
 			config = function()
-				require("noice").setup({
-					-- add any options here
-					level = nil,
-					lsp = {
-						-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-						override = {
-							["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-							["vim.lsp.util.stylize_markdown"] = true,
-							["cmp.entry.get_documentation"] = true,
-						},
-					},
-					-- you can enable a preset for easier configuration
-					presets = {
-						bottom_search = true, -- use a classic bottom cmdline for search
-						command_palette = true, -- position the cmdline and popupmenu together
-						long_message_to_split = true, -- long messages will be sent to a split
-						inc_rename = false, -- enables an input dialog for inc-rename.nvim
-						lsp_doc_border = false, -- add a border to hover docs and signature help
-					},
+				require("leap").add_default_mappings()
+			end,
+		}) ]]
+		use({
+			"iamcco/markdown-preview.nvim",
+			run = "cd app && npm install",
+			setup = function()
+				vim.g.mkdp_filetypes = { "markdown" }
+			end,
+			ft = { "markdown" },
+		})
+		--[[ use({
+			"projekt0n/github-nvim-theme",
+			tag = "v0.0.7",
+		}) ]]
+		use("epwalsh/obsidian.nvim")
+		-- Packer
+		use({
+			"jackMort/ChatGPT.nvim",
+			requires = {
+				"MunifTanjim/nui.nvim",
+				"nvim-lua/plenary.nvim",
+				"nvim-telescope/telescope.nvim",
+			},
+		})
+		use({
+			"mrjones2014/dash.nvim",
+			run = "make install",
+		})
+		use({
+			"ahmedkhalf/project.nvim",
+		})
+		-- use({ "codota/tabnine-nvim", run = "./dl_binaries.sh" })
+		use({
+			"stevearc/aerial.nvim",
+		})
+		use("mfussenegger/nvim-dap")
+		use({ "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } })
+		use("folke/neodev.nvim")
+		use({
+			"mrjones2014/legendary.nvim",
+			-- sqlite is only needed if you want to use frecency sorting
+			requires = "kkharji/sqlite.lua",
+		})
+		use({ "stevearc/dressing.nvim" })
+		use({ "TimUntersberger/neogit", requires = "nvim-lua/plenary.nvim" })
+		use("folke/lsp-colors.nvim")
+		use("folke/tokyonight.nvim")
+		use({
+			"lalitmee/cobalt2.nvim",
+			requires = "tjdevries/colorbuddy.nvim",
+		})
+		-- use("navarasu/onedark.nvim")
+		use("olimorris/onedarkpro.nvim")
+		use("tiagovla/tokyodark.nvim")
+		use("ishan9299/nvim-solarized-lua")
+		use("xiyaowong/nvim-transparent")
+		use({
+			"Hrle97/nvim.diagnostic_virtual_text_config",
+			config = function()
+				require("nvim.diagnostic_virtual_text_config").setup({
+					-- your config here...
 				})
 			end,
-			requires = {
-				-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-				"MunifTanjim/nui.nvim",
-				-- OPTIONAL:
-				--   `nvim-notify` is only needed, if you want to use the notification view.
-				--   If not available, we use `mini` as the fallback
-				"rcarriga/nvim-notify",
-			},
-		}) ]]
+		})
 	end,
 
 	config = { display = { open_cmd = "rightbelow 75vnew \\[packer\\]" }, max_jobs = 10 },

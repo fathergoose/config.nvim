@@ -7,9 +7,10 @@ local win_height = math.ceil(height * 0.5 - 4)
 local win_width = math.ceil(width * 0.3)
 
 local row = math.ceil((height - win_height) / 2 - 1)
-local col = math.ceil((width - win_width) / 2)
+local col = math.ceil((width - win_width) / 2 )
 
 require("nvim-tree").setup({
+    open_on_setup = true,
 	sync_root_with_cwd = true,
 	respect_buf_cwd = true,
 	update_focused_file = {
@@ -24,13 +25,14 @@ require("nvim-tree").setup({
 			},
 		},
 		float = {
-			enable = true,
+			enable = false,
 			quit_on_focus_loss = true,
 			open_win_config = {
+                -- anchor = "NE",
 				relative = "editor",
 				border = "rounded",
-				width = win_width,
-				height = win_height,
+                height = 30,
+                width = 60,
 				row = row,
 				col = col,
 			},
@@ -40,7 +42,7 @@ require("nvim-tree").setup({
 		group_empty = true,
 	},
 	filters = {
-		dotfiles = true,
+		dotfiles = false,
 	},
 	trash = {
 		cmd = "trash",

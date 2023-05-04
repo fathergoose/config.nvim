@@ -1,10 +1,28 @@
 local cmp = require("cmp")
+local lspkind = require("lspkind")
+
+
 
 cmp.setup({
-    preselect = cmp.PreselectMode.Item,
-    completion = {
-        completeopt = "menu,menuone,noinsert",
-    },
+	enabled = function()
+		return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt" or require("cmp_dap").is_dap_buffer()
+	end,
+	formatting = {
+		format = lspkind.cmp_format({
+			mode = "symbol_text",
+			menu = {
+				buffer = "[Buffer]",
+				nvim_lsp = "[LSP]",
+				luasnip = "[LuaSnip]",
+				nvim_lua = "[Lua]",
+				latex_symbols = "[Latex]",
+			},
+		}),
+	},
+	preselect = cmp.PreselectMode.Item,
+	completion = {
+		completeopt = "menu,menuone",
+	},
 	snippet = {
 		-- REQUIRED - you must specify a snippet engine
 		expand = function(args)
@@ -21,24 +39,25 @@ cmp.setup({
 	mapping = cmp.mapping.preset.insert({
 		["<C-b>"] = cmp.mapping.scroll_docs(-4),
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
-		["<C-Space>"] = cmp.mapping(function (fallback)
-            if cmp.visible() then
-                cmp.mapping(cmp.mapping.confirm({select = true }))
-            else
-                cmp.mapping(cmp.mapping.complete())
-            end
-        end, {"i"}),
+		["<C-Space>"] = cmp.mapping(function(fallback)
+			if cmp.visible() then
+				cmp.mapping(cmp.mapping.confirm({ select = true }))
+			else
+				cmp.mapping(cmp.mapping.complete())
+			end
+		end, { "i" }),
 		-- ["<tab>"] = cmp.mapping.confirm({select = true }),
 		["<C-e>"] = cmp.mapping.abort(),
 		["<tab>"] = cmp.mapping(function(fallback)
-            if require("copilot.suggestion").is_visible() then
-                require("copilot.suggestion").accept()
-            else
-                fallback()
-            end
+			if require("copilot.suggestion").is_visible() then
+				require("copilot.suggestion").accept()
+			else
+				fallback()
+			end
 		end),
 	}),
 	sources = cmp.config.sources({
+		{ name = "nvim_lsp_signature_help" },
 		{ name = "nvim_lsp" },
 		-- { name = "vsnip" }, -- For vsnip users.
 		{ name = "luasnip" }, -- For luasnip users.
@@ -67,11 +86,22 @@ cmp.setup.cmdline({ "/", "?" }, {
 	},
 })
 
+cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
+	sources = {
+		{ name = "dap" },
+	},
+})
+
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline(":", {
+	preselect = cmp.PreselectMode.Item,
 	mapping = cmp.mapping.preset.cmdline({
-		["<C-e>"] = cmp.mapping.close(),
-		["<C-y>"] = cmp.mapping.confirm(),
+		["<C-e>"] = cmp.mapping.complete(),
+		["<C-y>"] = cmp.mapping.complete({
+			select = true,
+		}),
+		["<C-f>"] = cmp.mapping.scroll_docs(4),
+		["<C-d>"] = cmp.mapping.scroll_docs(-4),
 
 		["<C-p>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
@@ -87,6 +117,20 @@ cmp.setup.cmdline(":", {
 				fallback()
 			end
 		end),
+		["<Tab>"] = cmp.mapping(function(fallback)
+			if cmp.visible() then
+				cmp.mapping(cmp.mapping.select_next_item())
+			else
+				cmp.complete()
+			end
+		end),
+		["<S-Tab>"] = cmp.mapping(function(fallback)
+			if cmp.visible() then
+				cmp.mapping(cmp.mapping.select_prev_item())
+			else
+				cmp.mapping(cmp.mapping.select_prev_item())
+			end
+		end),
 	}),
 	sources = cmp.config.sources({
 		{ name = "path" },
@@ -94,7 +138,7 @@ cmp.setup.cmdline(":", {
 		{ name = "cmdline" },
 	}),
 	completion = {
-		autocomplete = false,
+		autocomplete = true,
 	},
 })
 
@@ -105,9 +149,6 @@ set pumheight=10
 -- Set up lspconfig.
 local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-require("lspconfig")["tsserver"].setup({
-	capabilities = capabilities,
-})
 
 require("lspconfig")["rust_analyzer"].setup({
 	capabilities = capabilities,

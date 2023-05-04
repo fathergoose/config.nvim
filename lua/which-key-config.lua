@@ -1,4 +1,5 @@
 local wk = require("which-key")
+local colors = require("catppuccin.palettes").get_palette()
 wk.setup({
 	plugins = {
 		marks = true, -- shows a list of your marks on ' and `
@@ -75,26 +76,44 @@ wk.setup({
 	-- refer to the configuration section below
 })
 
+local function toggle_foldcolumn()
+    if vim.wo.foldcolumn == 0 then
+        vim.wo.foldcolumn = 'auto'
+    else
+        vim.wo.foldcolumn = 0
+    end
+end
 wk.register({
-	a = {},
+	v = { name = "View", f = { toggle_foldcolumn, "Toggle foldcolumn" } },
 	s = {
 		name = "Search",
 		a = { "<cmd>Telescope<CR>", "Search  all" },
 		b = { "<cmd>Telescope buffers<CR>", "Search  buffers" },
 		c = { "<cmd>Telescope commands<CR>", "Search commands" },
+		['<space>'] = { "<cmd>Telescope<CR>", "Search Pickers" },
 		f = { "<cmd>Telescope frecency<CR>", "Search frecency" },
 		g = { "<cmd>Telescope live_grep<CR>", "Search `grep`" },
 		h = { "<cmd>Telescope help_tags<CR>", "Search :help" },
 		r = { "<cmd>Telescope command_history<CR>", "Search command_history" },
 		p = { "<cmd>Telescope projects<CR>", "Search project directories" },
+		o = { "<cmd>ObsidianSearch<CR>", "Search Obsidian" },
 	},
-	d = {},
+	d = {
+		name = "Debug/DAP",
+		b = { "<cmd>lua require('dap').toggle_breakpoint()<CR>", "Toggle breakpoint" },
+		B = { "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>", "Set breakpoint" },
+		c = { "<cmd>lua require('dap').continue()<CR>", "Continue" },
+		i = { "<cmd>lua require('dap').step_into()<CR>", "Step into" },
+		o = { "<cmd>lua require('dap').step_over()<CR>", "Step over" },
+		u = { "<cmd>lua require('dap').step_out()<CR>", "Step out" },
+		r = { "<cmd>lua require('dap').repl.open()<CR>", "Open REPL" },
+	},
 	f = { name = "Float", e = { "<cmd>lua vim.diagnostic.open_float()<CR>", "Float error" } },
 	g = {
 		name = "Git",
 		b = { "<cmd>Git blame<CR>", "git blame" },
 		d = { "<cmd>Gitsigns diffthis<CR>", "Diff this file" },
-        o = { "<cmd>GBrowse<CR>", "Open in browser" },
+		o = { "<cmd>GBrowse<CR>", "Open in browser" },
 	},
 	h = { name = "Highlight / Hide", l = { "<cmd>noh<CR>", "Toggle highlight" } },
 	j = { name = "Jump", m = { "<cmd>Telescope marks<CR>", "Jump to mark" } },
@@ -111,29 +130,83 @@ wk.register({
 		i = { "<cmd>lua vim.lsp.buf.implementation()<CR>", "Implementation" },
 		r = { "<cmd>lua vim.lsp.buf.references()<CR>", "References" },
 		m = { "<cmd>lua vim.lsp.buf.rename()<CR>", "Rename" },
+		o = { "<cmd>LspStop<CR>", "Off" },
+		O = { "<cmd>LspStart<CR>", "On" },
 	},
 	t = {
 		name = "Toggle",
 		i = { "<cmd>IndentBlanklineToggle<CR>", "Indentation guides" },
 		t = { "<cmd>ToggleTerm direction=horizontal<CR>", "Toggle terminal (bottom)" },
-		v = { "<cmd>ToggleTerm direction=vertical size=100<CR>", "Vertical split terminal" },
+		v = { "<cmd>ToggleTerm direction=vertical size=160<CR>", "Vertical split terminal" },
 		f = { "<cmd>ToggleTerm direction=float<CR>", "Floating terminal" },
 		e = { "<cmd>TroubleToggle<CR>", "Errors (trouble.nvim)" },
 		h = { "<cmd>set hlsearch!<CR>", "Highlight search" },
-        c = { "<cmd>lua require('copilot.suggestion').toggle_auto_trigger()<CR>", "Toggle copilot" },
+		c = { "<cmd>lua require('copilot.suggestion').toggle_auto_trigger()<CR>", "Toggle copilot" },
+		C = {
+			"<cmd>hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg="
+				.. colors["mantle"]
+				--[[ .. " guifg="
+				.. colors["lavender"] ]]
+				.. " | set cursorline! <CR>",
+			"Toggle cursorline",
+		},
+		a = { "<cmd>AerialToggle<CR>", "Toggle aerial" },
+		A = { "<cmd>AerialToggle!<CR>", "Toggle aerial = but don't focus" },
+		b = { "<cmd>lua require'dap'.toggle_breakpoint()<CR>", "Toggle breakpoint" },
+		B = {
+			"<cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
+			"Set breakpoint with condition",
+		},
 	},
 	e = {
 		name = "Edit",
-		i = { "<cmd>edit $MYVIMRC<CR>", "Edit init.lua" },
+        c = { "<cmd>edit ~/.config/nvim/lua/colors.lua<CR>", "Edit config.lua" },
 		v = { "<cmd>edit $MYVIMRC<CR>", "Edit .vimrc (init.lua)" },
 		p = { "<cmd>edit ~/.config/nvim/lua/plugins.lua<CR>", "Edit plugins.lua" },
 		m = { "<cmd>edit ~/.config/nvim/lua/mappings.lua<CR>", "Edit mappings.lua" },
 		k = { "<cmd>edit ~/.config/nvim/lua/which-key-config.lua<CR>", "Edit which-key-config.lua" },
 		s = { "<cmd>edit ~/.config/nvim/lua/settings.lua<CR>", "Edit settings.lua" },
-        w = { "<cmd>edit ~/.config/wezterm/wezterm.lua<CR>", "Edit wezterm.lua" },
+		w = { "<cmd>edit ~/.config/wezterm/wezterm.lua<CR>", "Edit wezterm.lua" },
+		i = { "<cmd>edit ~/Documents/ObsidianVault/Inbox.md<CR>", "Edit Inbox" },
 	},
-    z = {
-        name = "Zlex (personal misc)",
-        m = { [[<cmd>%s//\r/g<cr>]], "Znewlines for ^M" },
-    }
+	o = {
+		name = "Obsidian",
+		i = { "<cmd>edit ~/Documents/ObsidianVault/Inbox.md<CR>", "Inbox" },
+		d = { "<cmd>ObsidianToday<cr>", "Daily Note" },
+	},
+    w = {
+        name = "Windows",
+        h = { "<cmd>wincmd h<CR>", "Window left" },
+        j = { "<cmd>wincmd j<CR>", "Window down" },
+        k = { "<cmd>wincmd k<CR>", "Window up" },
+        l = { "<cmd>wincmd l<CR>", "Window right" },
+        s = { "<cmd>split<CR>", "Split" },
+        v = { "<cmd>vsplit<CR>", "Vsplit" },
+        c = { "<cmd>close<CR>", "Close" },
+        o = { "<cmd>only<CR>", "Only" },
+        ["="] = { "<cmd>resize +5<CR>", "Increase height" },
+        ["-"] = { "<cmd>resize -5<CR>", "Decrease height" },
+        ["+"] = { "<cmd>vertical resize +5<CR>", "Increase width" },
+        ["_"] = { "<cmd>vertical resize -5<CR>", "Decrease width" },
+    },
+	z = {
+		name = "Zlex (personal misc)",
+		m = { [[<cmd>%s/
+/\r/g<cr>]], "Znewlines for ^M" },
+		z = { [[<cmd>ZenMode<cr>]], "Zen mode toggle" },
+	},
 }, { prefix = "<leader>" })
+
+-- Put this with which-key-config
+vim.keymap.set("n", "gf", function()
+	if require("obsidian").util.cursor_on_markdown_link() then
+		return "<cmd>ObsidianFollowLink<CR>"
+	else
+		return "gf"
+	end
+end, { noremap = false, expr = true })
+
+--[[ d = {function()
+    local file = os.date("%Y-%m-%d")
+    vim.cmd("edit ~/Documents/ObsidianVault/Notebook/" .. file .. ".md")
+end, "Edit Today's Note" }, ]]

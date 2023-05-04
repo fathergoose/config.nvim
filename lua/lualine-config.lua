@@ -1,4 +1,5 @@
 local custom_solarized = require("lualine.themes.solarized")
+local onedark = require("lualine.themes.onedark")
 custom_solarized.normal.c.bg = "NONE"
 custom_solarized.normal.b.fg = "#869396" -- Base1
 custom_solarized.normal.b.bg = "#193541" -- Base02
@@ -19,8 +20,8 @@ local function getCWD()
 end
 require("lualine").setup({
 	options = {
-		icons_enabled = true,
-		theme = "catppuccin", --palenight is tight
+		icons_enabled = false,
+		theme = "auto", -- "tokyonight",-- "catppuccin", --palenight is tight
 		component_separators = { left = "", right = "" },
 		section_separators = { left = "", right = "" },
 		disabled_filetypes = {
@@ -35,7 +36,7 @@ require("lualine").setup({
 		lualine_b = { { "filename", path = 3 } },
 		lualine_c = { "branch", "diff" },
 		lualine_x = { "diagnostics" },
-		lualine_y = {},
+		lualine_y = { "tabnine"},
 		lualine_z = { "progress", "location" },
 	},
 	inactive_sections = {
@@ -51,7 +52,7 @@ require("lualine").setup({
 		lualine_a = {
 			{
 				"buffers",
-				icons_enabled = true,
+				icons_enabled = false,
 				show_filename_only = true,
 				hide_filename_extension = true,
 				mode = 4,
@@ -70,7 +71,7 @@ require("lualine").setup({
 				"filetype",
 				colored = false, -- Displays filetype icon in color if set to true
 				icon_only = false, -- Display only an icon for filetype
-				icon = { align = "right" }, -- Display filetype icon on the right hand side
+				-- icon = { align = "right" }, -- Display filetype icon on the right hand side
 				-- icon =    {'X', align='right'}
 				-- Icon string ^ in table is ignored in filetype component
 			},

@@ -10,7 +10,7 @@ vim.api.nvim_create_autocmd({ "TermClose", "TermLeave" }, {
 	group = termGroup,
 })
 
-local foldGroup = vim.api.nvim_create_augroup("Folds", {})
+--[[ local foldGroup = vim.api.nvim_create_augroup("Folds", {})
 vim.api.nvim_create_autocmd("WinEnter", {
 	command = "normal zR",
 	group = foldGroup,
@@ -18,15 +18,15 @@ vim.api.nvim_create_autocmd("WinEnter", {
 vim.api.nvim_create_autocmd("VimEnter", {
 	command = "setlocal foldmethod=expr foldexpr=nvim_treesitter#foldexpr()",
 	group = foldGroup,
-})
+}) ]]
 
-local openAlphaIfNoArgs = function()
+--[[ local openAlphaIfNoArgs = function()
 	if vim.fn.argc() == 0 then
 		local buf = vim.api.nvim_get_current_buf()
 		vim.cmd("Alpha")
 		vim.api.nvim_buf_delete(buf, { force = true })
 	end
-end
+end ]]
 
 local startupGroup = vim.api.nvim_create_augroup("Startup", {})
 vim.api.nvim_create_autocmd("User", {
@@ -34,11 +34,11 @@ vim.api.nvim_create_autocmd("User", {
 	command = "lua vim.diagnostic.disable(0)",
 	group = startupGroup,
 })
-vim.api.nvim_create_autocmd("VimEnter", {
+--[[ vim.api.nvim_create_autocmd("VimEnter", {
 	callback = openAlphaIfNoArgs,
 	group = startupGroup,
 	once = true,
-})
+}) ]]
 
 local jsGroup = vim.api.nvim_create_augroup("JS/TS", {})
 vim.api.nvim_create_autocmd("FileType", {
@@ -54,12 +54,12 @@ vim.api.nvim_create_autocmd("FileType", {
 	group = luaGroup,
 })
 
-local mdGroup = vim.api.nvim_create_augroup("MDGroup", {})
+--[[ local mdGroup = vim.api.nvim_create_augroup("MDGroup", {})
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "vimwiki", "markdown" },
 	command = "iunmap <buffer> <TAB>",
 	group = mdGroup,
-})
+}) ]]
 
 local deckftGroup = vim.api.nvim_create_augroup("DeckftGroup", {})
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile", "BufReadPost" }, {
@@ -71,7 +71,7 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile", "BufReadPost" }, {
 		vim.b.presenting_slide_separator = "----"
 		vim.opt_local.spell = false
 		vim.opt_local.number = false
-		vim.opt.winbar = ''
+		vim.opt.winbar = ""
 	end,
 	group = deckftGroup,
 })
@@ -90,12 +90,13 @@ vim.api.nvim_create_autocmd("FileType", {
 	group = qfGroup,
 })
 
-local miniMapGroup = vim.api.nvim_create_augroup("MiniMap", {})
-vim.api.nvim_create_autocmd("QuitPre", {
-	-- pattern = {"*"},
-	command = "MinimapClose",
-	group = miniMapGroup,
-})
+
+--[[ local vimLeaveGroup = vim.api.nvim_create_augroup("VimLeave", {})
+vim.api.nvim_create_autocmd("VimLeave", {
+	pattern = { "*" },
+	command = "system(/Users/al/Local/bin/cursor-to-beam)",
+	group = vimLeaveGroup,
+}) ]]
 
 --[[ local textChangedGroup = vim.api.nvim_create_augroup("TextChanged", {})
 vim.api.nvim_create_autocmd({ "TextChangedI", "TextChangedP" }, {
@@ -125,7 +126,7 @@ vim.api.nvim_create_autocmd("User", {
 	pattern = "AlphaReady",
 	callback = function()
 		local alpha_win = vim.api.nvim_get_current_win()
-		require("neonews").check_news()
+		require("neonews").check_news(true)
 		vim.api.nvim_set_current_win(alpha_win)
 	end,
 	group = alphaReadyGroup,

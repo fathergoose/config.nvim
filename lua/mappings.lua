@@ -2,7 +2,7 @@ local opts = { noremap = true, silent = true }
 
 --Normal
 vim.api.nvim_set_keymap("n", "<C-p>", ":Telescope find_files find_command=rg,--ignore,--hidden,--files<CR>", opts)
-vim.api.nvim_set_keymap("c", "<C-r>", ":Telescope command_history<CR>", { noremap = true })
+vim.api.nvim_set_keymap("c", "<m-r>", ":Telescope command_history<CR>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<Leader>ek", ":e ~/.config/nvim/lua/mappings.lua<CR>", opts)
 vim.api.nvim_set_keymap("n", "<Leader>ep", ":e ~/.config/nvim/lua/plugins.lua<CR>", opts)
 vim.api.nvim_set_keymap("n", "<Leader>ef", ":e ~/.config/nvim/lua/", { noremap = true })
@@ -18,7 +18,7 @@ vim.api.nvim_set_keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", op
 vim.api.nvim_set_keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
 vim.api.nvim_set_keymap("n", "<space>q", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
 vim.api.nvim_set_keymap("n", "<space>l", "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>", opts)
-vim.api.nvim_set_keymap("n", "<C-Space>", "<cmd>Telescope<CR>", opts)
+-- vim.api.nvim_set_keymap("n", "<C-Space>", "<cmd>Telescope<CR>", opts)
 vim.api.nvim_set_keymap("n", "<C-/>", "mzI//<space><esc>`z3l", { noremap = true, silent = true })
 
 --Terminal
