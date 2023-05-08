@@ -76,12 +76,34 @@ wk.setup({
 	-- refer to the configuration section below
 })
 
+local Terminal  = require('toggleterm.terminal').Terminal
+
+local lazygit = Terminal:new({
+  cmd = "lazygit",
+  dir = "git_dir",
+  direction = "float",
+  float_opts = {
+    border = "double",
+  },
+  -- function to run on opening the terminal
+  on_open = function(term)
+    vim.cmd("startinsert!")
+    vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", {noremap = true, silent = true})
+  end,
+  -- function to run on closing the terminal
+  on_close = function(_term)
+    vim.cmd("startinsert!")
+  end,
+})
+function _lazygit_toggle()
+  lazygit:toggle()
+end
 local function toggle_foldcolumn()
-    if vim.wo.foldcolumn == 0 then
-        vim.wo.foldcolumn = 'auto'
-    else
-        vim.wo.foldcolumn = 0
-    end
+	if vim.wo.foldcolumn == 0 then
+		vim.wo.foldcolumn = "auto"
+	else
+		vim.wo.foldcolumn = 0
+	end
 end
 wk.register({
 	v = { name = "View", f = { toggle_foldcolumn, "Toggle foldcolumn" } },
@@ -90,7 +112,7 @@ wk.register({
 		a = { "<cmd>Telescope<CR>", "Search  all" },
 		b = { "<cmd>Telescope buffers<CR>", "Search  buffers" },
 		c = { "<cmd>Telescope commands<CR>", "Search commands" },
-		['<space>'] = { "<cmd>Telescope<CR>", "Search Pickers" },
+		["<space>"] = { "<cmd>Telescope<CR>", "Search Pickers" },
 		f = { "<cmd>Telescope frecency<CR>", "Search frecency" },
 		g = { "<cmd>Telescope live_grep<CR>", "Search `grep`" },
 		h = { "<cmd>Telescope help_tags<CR>", "Search :help" },
@@ -99,7 +121,7 @@ wk.register({
 		o = { "<cmd>ObsidianSearch<CR>", "Search Obsidian" },
 	},
 	d = {
-		name = "Debug/DAP",
+		name = "    Debug/DAP",
 		b = { "<cmd>lua require('dap').toggle_breakpoint()<CR>", "Toggle breakpoint" },
 		B = { "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>", "Set breakpoint" },
 		c = { "<cmd>lua require('dap').continue()<CR>", "Continue" },
@@ -113,7 +135,9 @@ wk.register({
 		name = "Git",
 		b = { "<cmd>Git blame<CR>", "git blame" },
 		d = { "<cmd>Gitsigns diffthis<CR>", "Diff this file" },
+		l = { "<cmd>Gitsigns blame_line<CR>", "Blame line" },
 		o = { "<cmd>GBrowse<CR>", "Open in browser" },
+        z = {"<cmd>lua _lazygit_toggle()<CR>", "Lazygit"},
 	},
 	h = { name = "Highlight / Hide", l = { "<cmd>noh<CR>", "Toggle highlight" } },
 	j = { name = "Jump", m = { "<cmd>Telescope marks<CR>", "Jump to mark" } },
@@ -160,7 +184,7 @@ wk.register({
 	},
 	e = {
 		name = "Edit",
-        c = { "<cmd>edit ~/.config/nvim/lua/colors.lua<CR>", "Edit config.lua" },
+		c = { "<cmd>edit ~/.config/nvim/lua/colors.lua<CR>", "Edit config.lua" },
 		v = { "<cmd>edit $MYVIMRC<CR>", "Edit .vimrc (init.lua)" },
 		p = { "<cmd>edit ~/.config/nvim/lua/plugins.lua<CR>", "Edit plugins.lua" },
 		m = { "<cmd>edit ~/.config/nvim/lua/mappings.lua<CR>", "Edit mappings.lua" },
@@ -174,21 +198,21 @@ wk.register({
 		i = { "<cmd>edit ~/Documents/ObsidianVault/Inbox.md<CR>", "Inbox" },
 		d = { "<cmd>ObsidianToday<cr>", "Daily Note" },
 	},
-    w = {
-        name = "Windows",
-        h = { "<cmd>wincmd h<CR>", "Window left" },
-        j = { "<cmd>wincmd j<CR>", "Window down" },
-        k = { "<cmd>wincmd k<CR>", "Window up" },
-        l = { "<cmd>wincmd l<CR>", "Window right" },
-        s = { "<cmd>split<CR>", "Split" },
-        v = { "<cmd>vsplit<CR>", "Vsplit" },
-        c = { "<cmd>close<CR>", "Close" },
-        o = { "<cmd>only<CR>", "Only" },
-        ["="] = { "<cmd>resize +5<CR>", "Increase height" },
-        ["-"] = { "<cmd>resize -5<CR>", "Decrease height" },
-        ["+"] = { "<cmd>vertical resize +5<CR>", "Increase width" },
-        ["_"] = { "<cmd>vertical resize -5<CR>", "Decrease width" },
-    },
+	w = {
+		name = "Windows",
+		h = { "<cmd>wincmd h<CR>", "Window left" },
+		j = { "<cmd>wincmd j<CR>", "Window down" },
+		k = { "<cmd>wincmd k<CR>", "Window up" },
+		l = { "<cmd>wincmd l<CR>", "Window right" },
+		s = { "<cmd>split<CR>", "Split" },
+		v = { "<cmd>vsplit<CR>", "Vsplit" },
+		c = { "<cmd>close<CR>", "Close" },
+		o = { "<cmd>only<CR>", "Only" },
+		["="] = { "<cmd>resize +5<CR>", "Increase height" },
+		["-"] = { "<cmd>resize -5<CR>", "Decrease height" },
+		["+"] = { "<cmd>vertical resize +5<CR>", "Increase width" },
+		["_"] = { "<cmd>vertical resize -5<CR>", "Decrease width" },
+	},
 	z = {
 		name = "Zlex (personal misc)",
 		m = { [[<cmd>%s/

@@ -62,7 +62,7 @@ local null_ls = require("null-ls")
 
 null_ls.setup({
 	on_attach = on_attach,
-	debug = true,
+	debug = false,
 	sources = {
 		null_ls.builtins.code_actions.gitsigns,
 		null_ls.builtins.code_actions.eslint_d,
@@ -154,7 +154,7 @@ vim.diagnostic.config({
 	underline = { severity = { min = vim.diagnostic.severity.WARN } },
 })
 
---[[ require("lspconfig").pyright.setup({
+require("lspconfig").pyright.setup({
 	on_attach = on_attach,
 	python = {
 		analysis = {
@@ -163,8 +163,8 @@ vim.diagnostic.config({
 			useLibraryCodeForTypes = true,
 		},
 	},
-}) ]]
-
-require("lspconfig").pylyzer.setup({
-    on_attach = on_attach,
 })
+
+--[[ require("lspconfig").pylyzer.setup({
+    on_attach = on_attach,
+}) ]]
