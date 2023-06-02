@@ -65,13 +65,6 @@ return require("packer").startup({
 		use({ "SidOfc/mkdx" })
 		use("rhysd/vim-gfm-syntax")
 		use({
-			"nvim-telescope/telescope-frecency.nvim",
-			config = function()
-				require("telescope").load_extension("frecency")
-			end,
-			requires = { "tami5/sqlite.lua" },
-		})
-		use({
 			"nvim-telescope/telescope-smart-history.nvim",
 			requires = { "tami5/sqlite.lua" },
 		})
@@ -88,15 +81,13 @@ return require("packer").startup({
 		use("hrsh7th/cmp-emoji")
 		use("hrsh7th/cmp-cmdline")
 		use("hrsh7th/nvim-cmp")
-		use("hrsh7th/cmp-vsnip")
-		use("hrsh7th/vim-vsnip")
 		use("rcarriga/cmp-dap")
 		use("L3MON4D3/LuaSnip")
 		use("saadparwaiz1/cmp_luasnip")
-
 		use({
 			"zbirenbaum/copilot.lua",
-			event = { "VimEnter" },
+			cmd = "Copilot",
+			event = { "InsertEnter" },
 			config = function()
 				vim.defer_fn(function()
 					require("copilot").setup({
@@ -142,13 +133,13 @@ return require("packer").startup({
 							},
 						},
 						server_opts_overrides = {
-							trace = "verbose",
+							--[[ trace = "verbose",
 							settings = {
 								advanced = {
 									listCount = 10, -- #completions for panel
 									inlineSuggestCount = 3, -- #completions for getCompletions
 								},
-							},
+							}, ]]
 						},
 					})
 				end, 100)
@@ -286,7 +277,7 @@ return require("packer").startup({
 				})
 			end,
 		})
-		use("vim-scripts/dbext.vim")
+		use({ "vim-scripts/dbext.vim", opt = true, ft = { "sql" } })
 		use({
 			"folke/todo-comments.nvim",
 			requires = "nvim-lua/plenary.nvim",
@@ -296,12 +287,6 @@ return require("packer").startup({
 				})
 			end,
 		})
-		--[[ use({
-			"ggandor/leap.nvim",
-			config = function()
-				require("leap").add_default_mappings()
-			end,
-		}) ]]
 		use({
 			"iamcco/markdown-preview.nvim",
 			run = "cd app && npm install",
@@ -310,10 +295,6 @@ return require("packer").startup({
 			end,
 			ft = { "markdown" },
 		})
-		--[[ use({
-			"projekt0n/github-nvim-theme",
-			tag = "v0.0.7",
-		}) ]]
 		use("epwalsh/obsidian.nvim")
 		-- Packer
 		use({
@@ -325,13 +306,8 @@ return require("packer").startup({
 			},
 		})
 		use({
-			"mrjones2014/dash.nvim",
-			run = "make install",
-		})
-		use({
 			"ahmedkhalf/project.nvim",
 		})
-		-- use({ "codota/tabnine-nvim", run = "./dl_binaries.sh" })
 		use({
 			"stevearc/aerial.nvim",
 		})
@@ -340,7 +316,6 @@ return require("packer").startup({
 		use("folke/neodev.nvim")
 		use({
 			"mrjones2014/legendary.nvim",
-			-- sqlite is only needed if you want to use frecency sorting
 			requires = "kkharji/sqlite.lua",
 		})
 		use({ "stevearc/dressing.nvim" })
@@ -351,7 +326,6 @@ return require("packer").startup({
 			"lalitmee/cobalt2.nvim",
 			requires = "tjdevries/colorbuddy.nvim",
 		})
-		-- use("navarasu/onedark.nvim")
 		use("olimorris/onedarkpro.nvim")
 		use("tiagovla/tokyodark.nvim")
 		use("ishan9299/nvim-solarized-lua")
@@ -363,6 +337,15 @@ return require("packer").startup({
 					-- your config here...
 				})
 			end,
+		})
+		use("nvim-neotest/neotest-python")
+		use({
+			"nvim-neotest/neotest",
+			requires = {
+				"nvim-lua/plenary.nvim",
+				"nvim-treesitter/nvim-treesitter",
+				"antoinemadec/FixCursorHold.nvim",
+			},
 		})
 	end,
 

@@ -19,8 +19,8 @@ telescope.setup({
 		mappings = {
 			i = {
 				["<c-t>"] = trouble.open_with_trouble,
-				["<c-n>"] = "move_selection_next",
-				["<c-p>"] = "move_selection_previous",
+				--[[ ["<c-n>"] = "move_selection_next",
+				["<c-p>"] = "move_selection_previous", ]]
 				["<c-n>"] = "cycle_history_next",
 				["<c-p>"] = "cycle_history_prev",
 				["<c-k>"] = "move_selection_previous",
@@ -37,19 +37,9 @@ telescope.setup({
 			path = "~/.local/share/nvim/databases/telescope_history.sqlite3",
 			limit = 100,
 		},
-		-- It's a shame, but I just don't get how to use this
-		-- I think bat is the default anyway
-		--[[ file_previewer = require("telescope.previewers").new_termopen_previewer({
-            get_command = function(entry, status)
-                return { "bat", entry.path }
-            end,
-        }).new, ]]
 	},
 	pickers = {
 		find_files = {
-			theme = "dropdown",
-		},
-		frecency = {
 			theme = "dropdown",
 		},
 		command_history = {
@@ -57,21 +47,37 @@ telescope.setup({
 		},
 	},
 	extensions = {
-		frecency = {
-			db_root = "/Users/al/.config/nvim/frecency",
-			show_scores = false,
+		--[[ frecency = {
+			db_root = "/Users/al/.local/share/nvim/databases",
+			db_safe_mode = true,
+			auto_validate = true,
+			show_scores = true,
+			default_workspace = "CWD",
 			show_unindexed = true,
-			ignore_patterns = { "*.git/*", "*/tmp/*", "*/node_modules/*", "*/layers/*" },
+			ignore_patterns = {
+				"*.git/*",
+				"*/tmp/*",
+				"*/node_modules/*",
+				"*/layers/python-efs/python/*",
+				"*/layers/python-dependencies/python/*",
+				"*/venv/*",
+				"*/.venv/*",
+				"*/__pycache__/*",
+				"*undodir/*",
+                "*/sessions*",
+                "*.DS_Store",
+			},
 			disable_devicons = false,
 			workspaces = {
+                ["al"] = "/Users/al",
 				["conf"] = "/Users/al/.config",
-				["AI"] = "/Users/al/code/Augintel",
+				["ai"] = "/Users/al/code/Augintel",
 				["wiki"] = "/Users/al/Desktop/vimwiki",
 				["code"] = "/Users/al/code",
-				["APIs"] = "/Users/al/code/Augintel/apis",
-				["UI"] = "/Users/al/code/Augintel/augintel-ui",
+				["api"] = "/Users/al/code/Augintel/apis",
+				["ui"] = "/Users/al/code/Augintel/augintel-ui",
 			},
-		},
+		}, ]]
 		fzy_native = {
 			override_generic_sorter = true,
 			override_file_sorter = true,
@@ -79,7 +85,7 @@ telescope.setup({
 	},
 })
 
-telescope.load_extension("frecency")
+-- telescope.load_extension("frecency")
 telescope.load_extension("fzy_native")
 telescope.load_extension("smart_history")
 telescope.load_extension("projects")

@@ -90,7 +90,6 @@ vim.api.nvim_create_autocmd("FileType", {
 	group = qfGroup,
 })
 
-
 --[[ local vimLeaveGroup = vim.api.nvim_create_augroup("VimLeave", {})
 vim.api.nvim_create_autocmd("VimLeave", {
 	pattern = { "*" },
@@ -125,9 +124,15 @@ local alphaReadyGroup = vim.api.nvim_create_augroup("AlphaReady", {})
 vim.api.nvim_create_autocmd("User", {
 	pattern = "AlphaReady",
 	callback = function()
-		local alpha_win = vim.api.nvim_get_current_win()
-		require("neonews").check_news(true)
-		vim.api.nvim_set_current_win(alpha_win)
+		if vim.g.neovide then
+            return
+		else
+			local alpha_win = vim.api.nvim_get_current_win()
+			-- TODO: check_news function should return a boolean and only
+			-- refocus alpha if there isn't any news i.e. check_news() -> false
+			require("neonews").check_news(true)
+			vim.api.nvim_set_current_win(alpha_win)
+		end
 	end,
 	group = alphaReadyGroup,
 })

@@ -1,9 +1,8 @@
 vim.api.nvim_set_option("termguicolors", true)
 vim.cmd([[
-set guifont=MonoLisaOne\ Nerd\ Font:h14
+set guifont=MonoLisa\ 230504:h12
 ]])
 
-vim.lsp.set_log_level("debug")
 
 vim.cmd("let g:loaded_sql_completion = -1")
 vim.g.loaded = 1
@@ -43,9 +42,6 @@ require("color-picker-config")
 require("lualine-config")
 require("zen-mode-config")
 require("treesitter-context").setup({})
-require("neoscroll").setup({
-	easing_function = "sine", -- Default easing function
-})
 require("nvim-lastplace").setup({})
 require("gitsigns-config")
 require("colorizer").setup({}, { css = true })
@@ -53,6 +49,10 @@ require("colorizer").setup({}, { css = true })
 require("alpha-config")
 
 vim.cmd("noremap <f1> <nop>")
+
+require("neoscroll").setup({
+	easing_function = "sine", -- Default easing function
+})
 local t = {}
 -- Syntax: t[keys] = {function, {function arguments}}
 -- Use the "sine" easing function
@@ -116,21 +116,6 @@ vim.cmd('nmap <leader>it a<C-R>=strftime("%T")<CR><Esc>')
 vim.cmd('nmap <leader>id a<C-R>=strftime("# %A, %B %d, %Y")<CR><Esc>')
 
 vim.api.nvim_create_user_command("Diary", vimwikiDiaryNoteWithName, {})
-
-require("transparent").setup({
-	extra_groups = {
-		"all",
-		"GitSignsAdd",
-		"GitSignsChange",
-		"GitSignsDelete",
-		"FloatShadowThrough",
-		"FloatShadow",
-		"help",
-		"NormalFloat", -- plugins which have float panel such as Lazy, Mason, LspInfo
-		"NvimTreeNormal",
-	},
-	exclude_groups = {},
-})
 
 local rt = require("rust-tools")
 
@@ -208,6 +193,7 @@ require("nvim-treesitter.configs").setup({
 	},
 })
 
+require("neotest-config")
 require("dap-config")
 require("neodev").setup({
 	library = { plugins = { "nvim-dap-ui" }, types = true },
@@ -332,3 +318,34 @@ vim.cmd([[
 vim.cmd([[
 nnoremap <M-m> :RnvimrToggle<CR>
 ]])
+
+if vim.g.neovide then
+	local colors = require("tokyonight.colors").setup({
+		colorscheme = "night",
+	})
+	-- local util = require("tokyonight.util")
+	-- Helper function for transparency formatting
+	--[[ local alpha = function()
+		return string.format("%x", math.floor(255 * vim.g.transparency or 0.8))
+	end ]]
+	-- g:neovide_transparency should be 0 if you want to unify transparency of content and title bar.
+	vim.g.neovide_transparency = 0.0
+	vim.g.transparency = 1.0
+	vim.g.neovide_background_color = colors.bg
+else
+	require("transparent").setup({
+		extra_groups = {
+			"all",
+			"GitSignsAdd",
+			"GitSignsChange",
+			"GitSignsDelete",
+			"FloatShadowThrough",
+			"FloatShadow",
+			"help",
+			"NormalFloat",
+			"NvimTreeNormal",
+			"NvimTreeVertsplit",
+		},
+		exclude_groups = {},
+	})
+end

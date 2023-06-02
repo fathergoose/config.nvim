@@ -64,16 +64,15 @@ require("catppuccin").setup({
 		},
 	},
 }) ]]
-
 require("tokyonight").setup({
-	colorscheme = 'night',
+	colorscheme = "night",
 	-- colorscheme = 'storm',
 	-- colorscheme = 'day',
 	-- your configuration comes here
 	-- or leave it empty to use the default settings
 	style = "night", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
 	light_style = "day", -- The theme is used when the background is set to light
-	transparent = true, -- Enable this to disable setting the background color
+	transparent = not vim.g.neovide, -- Enable this to disable setting the background color
 	terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
 	styles = {
 		-- Style to be applied to different syntax groups
@@ -115,7 +114,7 @@ vim.cmd.colorscheme("tokyonight")
 })
 vim.cmd.colorscheme("onedark")
  ]]
- -- vim.cmd("colorscheme solarized")
+-- vim.cmd("colorscheme solarized")
 -- vim.g.tokyodark_transparent_background = false
 -- vim.g.tokyodark_enable_italic_comment = true
 -- vim.g.tokyodark_enable_italic = true

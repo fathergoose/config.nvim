@@ -102,13 +102,13 @@ null_ls.setup({
 		}),
 		null_ls.builtins.diagnostics.cfn_lint,
 		null_ls.builtins.diagnostics.codespell,
-		null_ls.builtins.formatting.codespell.with({
+		--[[ null_ls.builtins.formatting.codespell.with({
 			filetypes = { "markdown", "text" },
-		}),
+		}), ]]
 		null_ls.builtins.formatting.sqlfluff.with({
 			extra_args = { "--dialect", "postgres", "--exclude-rules", "L031" },
 		}),
-        null_ls.builtins.code_actions.refactoring,
+        -- null_ls.builtins.code_actions.refactoring,
 		null_ls.builtins.formatting.beautysh,
 		null_ls.builtins.diagnostics.shellcheck,
 		null_ls.builtins.diagnostics.luacheck.with({
@@ -128,7 +128,7 @@ null_ls.setup({
 			},
 		}),
 		null_ls.builtins.formatting.autopep8,
-		null_ls.builtins.diagnostics.flake8,
+		-- null_ls.builtins.diagnostics.flake8,
 	},
 })
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -160,7 +160,7 @@ require("lspconfig").pyright.setup({
 		analysis = {
 			autoSearchPaths = true,
 			diagnosticMode = "file",
-			useLibraryCodeForTypes = true,
+			useLibraryCodeForTypes = true
 		},
 	},
 })

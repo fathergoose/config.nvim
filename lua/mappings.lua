@@ -2,6 +2,7 @@ local opts = { noremap = true, silent = true }
 
 --Normal
 vim.api.nvim_set_keymap("n", "<C-p>", ":Telescope find_files find_command=rg,--ignore,--hidden,--files<CR>", opts)
+vim.api.nvim_set_keymap("n", "?", "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>", opts)
 vim.api.nvim_set_keymap("c", "<m-r>", ":Telescope command_history<CR>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<Leader>ek", ":e ~/.config/nvim/lua/mappings.lua<CR>", opts)
 vim.api.nvim_set_keymap("n", "<Leader>ep", ":e ~/.config/nvim/lua/plugins.lua<CR>", opts)
@@ -28,6 +29,7 @@ vim.api.nvim_set_keymap("t", "<C-c>", "<C-c><C-\\><C-n>", opts)
 -- Insert
 vim.api.nvim_set_keymap("i", "<C-c>", "<ESC>", { noremap = true })
 vim.api.nvim_set_keymap("i", "<C-.>", "<ESC>>>A", opts)
+vim.api.nvim_set_keymap("i", "<C-,>", "<ESC><<A", opts)
 vim.api.nvim_set_keymap("i", "<C-/>", "<esc>mzI//<space><esc>`z3li", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("i", "<C-t>", "<ESC>:new<CR>", opts)
 vim.api.nvim_set_keymap("i", "<C-b>", "<Left>", { silent = true })
@@ -58,6 +60,8 @@ vim.api.nvim_set_keymap("c", "<M-f>", "<C-f>", { noremap = true })
 vim.cmd([[
 cabbrev desk ~/Desktop
 
+  nnoremap <silent>[n <cmd>lua require("neotest").jump.prev({ status = "failed" })<CR>
+  nnoremap <silent>]n <cmd>lua require("neotest").jump.next({ status = "failed" })<CR>
 
 function! Emacs_bindings_home()
   let start_col = col('.')

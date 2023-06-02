@@ -40,11 +40,12 @@ require("aerial").setup({
 		["zx"] = "actions.tree_sync_folds",
 		["zX"] = "actions.tree_sync_folds",
 	},
-	lazy_load = false,
+	lazy_load = true,
 	filter_kind = false,
 	manage_folds = true,
 	link_folds_to_tree = true,
-	open_automatic = function(bufnr)
+    open_automatic = false,
+	--[[ open_automatic = function(bufnr)
 		return vim.api.nvim_buf_line_count(bufnr) > 80 and aerial.num_symbols(bufnr) > 4 and not aerial.was_closed()
-	end,
+	end, ]]
 })

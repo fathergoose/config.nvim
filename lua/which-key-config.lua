@@ -76,27 +76,27 @@ wk.setup({
 	-- refer to the configuration section below
 })
 
-local Terminal  = require('toggleterm.terminal').Terminal
+local Terminal = require("toggleterm.terminal").Terminal
 
 local lazygit = Terminal:new({
-  cmd = "lazygit",
-  dir = "git_dir",
-  direction = "float",
-  float_opts = {
-    border = "double",
-  },
-  -- function to run on opening the terminal
-  on_open = function(term)
-    vim.cmd("startinsert!")
-    vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", {noremap = true, silent = true})
-  end,
-  -- function to run on closing the terminal
-  on_close = function(_term)
-    vim.cmd("startinsert!")
-  end,
+	cmd = "lazygit",
+	dir = "git_dir",
+	direction = "float",
+	float_opts = {
+		border = "double",
+	},
+	-- function to run on opening the terminal
+	on_open = function(term)
+		vim.cmd("startinsert!")
+		vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
+	end,
+	-- function to run on closing the terminal
+	on_close = function(_term)
+		vim.cmd("startinsert!")
+	end,
 })
 function _lazygit_toggle()
-  lazygit:toggle()
+	lazygit:toggle()
 end
 local function toggle_foldcolumn()
 	if vim.wo.foldcolumn == 0 then
@@ -137,11 +137,23 @@ wk.register({
 		d = { "<cmd>Gitsigns diffthis<CR>", "Diff this file" },
 		l = { "<cmd>Gitsigns blame_line<CR>", "Blame line" },
 		o = { "<cmd>GBrowse<CR>", "Open in browser" },
-        z = {"<cmd>lua _lazygit_toggle()<CR>", "Lazygit"},
+		z = { "<cmd>lua _lazygit_toggle()<CR>", "Lazygit" },
+	},
+	r = {
+		name = "Run",
+		t = { "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>", "This file" },
+		r = { "<cmd>lua require('neotest').run.run()<CR>", "All tests" },
+        h = { "<cmd>lua require('neotest').run.run"},
+        l = { "<cmd>lua require('neotest').run.run_last()<CR>", "Last test" },
+        s = { "<cmd>lua require('neotest').summary.toggle()<CR>", "Summary" },
 	},
 	h = { name = "Highlight / Hide", l = { "<cmd>noh<CR>", "Toggle highlight" } },
 	j = { name = "Jump", m = { "<cmd>Telescope marks<CR>", "Jump to mark" } },
-	k = {},
+	k = {
+		name = "idK",
+		k = { "<cmd>lua vim.lsp.buf.hover()<CR>", "Hover" },
+		f = { "<cmd>lua vim.lsp.buf.signature_help", "Function signature help" },
+	},
 	l = {
 		name = "LSP",
 		f = { "<cmd>lua vim.lsp.buf.format({ async = true})<CR>", "Format" },
@@ -215,8 +227,7 @@ wk.register({
 	},
 	z = {
 		name = "Zlex (personal misc)",
-		m = { [[<cmd>%s/
-/\r/g<cr>]], "Znewlines for ^M" },
+		m = { [[<cmd>%s/ /\r/g<cr>]], "Znewlines for ^M" },
 		z = { [[<cmd>ZenMode<cr>]], "Zen mode toggle" },
 	},
 }, { prefix = "<leader>" })

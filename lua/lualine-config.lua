@@ -38,9 +38,6 @@ local function mypwd()
 	for idx, node in ipairs(path_components) do
 		-- path_components[1]== "" OR "~"
 		-- path_components[2] == "first directory under ~ or /"
-        print("DEBUG")
-        print(idx)
-        print(node)
 		local n_path_components = #path_components
 		if idx == n_path_components or idx < 3 then
 			abbrivated_path[idx] = node
@@ -49,14 +46,7 @@ local function mypwd()
 		else
 			abbrivated_path[idx] = node:sub(1,1) == '.' and node:sub(1, 2) or node:sub(1, 1)
 		end
-    print("DEBUG path_components:len")
-    print(n_path_components)
 	end
-    for idx, node in ipairs(path_components) do
-        print(idx)
-        print(node)
-    end
-    print(table.concat(path_components, "/"))
 	return table.concat(abbrivated_path, "/")
 end
 require("lualine").setup({
