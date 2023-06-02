@@ -10,7 +10,6 @@ local row = math.ceil((height - win_height) / 2 - 1)
 local col = math.ceil((width - win_width) / 2 )
 
 require("nvim-tree").setup({
-    open_on_setup = true,
 	sync_root_with_cwd = true,
 	respect_buf_cwd = true,
 	update_focused_file = {

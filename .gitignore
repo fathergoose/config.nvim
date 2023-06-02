@@ -7,3 +7,4 @@ undodir
 frecency
 databases
 .DS_Store
+plugin/packer_compiled.lua

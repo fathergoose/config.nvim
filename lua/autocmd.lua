@@ -130,8 +130,8 @@ vim.api.nvim_create_autocmd("User", {
 			local alpha_win = vim.api.nvim_get_current_win()
 			-- TODO: check_news function should return a boolean and only
 			-- refocus alpha if there isn't any news i.e. check_news() -> false
-			require("neonews").check_news(true)
-			vim.api.nvim_set_current_win(alpha_win)
+			--[[ require("neonews").check_news(true)
+			vim.api.nvim_set_current_win(alpha_win) ]]
 		end
 	end,
 	group = alphaReadyGroup,
