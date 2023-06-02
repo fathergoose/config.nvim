@@ -1,3 +1,9 @@
 sessions/*
 undodir/*
 frecency/*
+sessions
+plugin
+undodir
+frecency
+databases
+.DS_Store

@@ -234,9 +234,14 @@ return require("packer").startup({
 				})
 			end,
 		})
+<<<<<<< HEAD
 		use({
 			"fathergoose/neonews",
 			-- "/Users/al/code/nvim/neonews/",
+=======
+		--[[ use({
+			"/Users/al/code/nvim/neonews",
+>>>>>>> main
 			config = function()
 				require("neonews").setup({
 					check_on_startup = false,
@@ -244,7 +249,7 @@ return require("packer").startup({
 					startup_message = false,
 				})
 			end,
-		})
+		}) ]]
 		use("hrsh7th/cmp-nvim-lua")
 		use({
 			"catppuccin/nvim",
